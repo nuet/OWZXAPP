@@ -124,7 +124,10 @@ namespace OWZX.Data
         {
             return OWZX.Core.BSPData.RDBS.GetBJ28LotteryList(pageNumber, pageSize, condition);
         }
-
+        public static DataTable GetProfitloss(int type,  string account )
+        {
+            return OWZX.Core.BSPData.RDBS.GetProfitloss(type, account);
+        }
 
         /// <summary>
         ///获取彩票记录(分页)

@@ -610,7 +610,11 @@ namespace OWZX.Services
             return list;
         }
 
-
+        public static DataTable GetProfitloss(int type, string account)
+        {
+            DataTable dt = OWZX.Data.Lottery.GetProfitloss(type, account);
+            return dt;
+        }
         /// <summary>
         ///获取彩票记录(分页)
         /// </summary>

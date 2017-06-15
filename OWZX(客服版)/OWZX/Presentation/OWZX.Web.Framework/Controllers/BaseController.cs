@@ -140,5 +140,9 @@ namespace OWZX.Web.Framework
         {
             return Content(string.Format("{0}\"state\":\"{1}\",\"biz_content\":{2}{3}{4}{5}", "{", state, isObject ? "" : "\"", biz_content, isObject ? "" : "\"", "}"));
         }
+        protected ActionResult APIResult(string state, string biz_content, bool isObject, string keyname,string keyvalue)
+        {
+            return Content(string.Format("{0}\"state\":\"{1}\",\"biz_content\":{2}{3}{4},\"{6}\":\"{7}\"{5}", "{", state, isObject ? "" : "\"", biz_content, isObject ? "" : "\"", "}", keyname, keyvalue));
+        }
     }
 }

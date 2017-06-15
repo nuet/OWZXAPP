@@ -332,6 +332,30 @@ namespace OWZX.Web.Controllers
             }
         }
 
+        public ActionResult GetProfitloss()
+        {
+            NameValueCollection parmas = WorkContext.postparms;
+
+            string type = parmas["type"];
+
+            DataTable list = Lottery.GetProfitloss(int.Parse(type), parmas["account"].ToString());
+
+            if (list != null && list.Rows.Count > 0)
+            {
+                var status = list.Rows[0]["status"].ToString();
+                var proft = "↑" + list.Rows[0]["luckresult"].ToString();
+                if (status == "2")
+                {
+                    proft = "↓" + list.Rows[0]["luckresult"].ToString();
+                }
+                return APIResult("success", proft, false, "status", status);
+            }
+            else
+            {
+                return APIResult("error", "");
+            }
+        }
+
         /// <summary>
         /// 最新竞猜信息
         /// </summary>

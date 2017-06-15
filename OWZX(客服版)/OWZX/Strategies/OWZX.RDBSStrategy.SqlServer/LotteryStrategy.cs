@@ -729,6 +729,19 @@ end catch
             return RDBSHelper.ExecuteTable(CommandType.Text, commandText, parms)[0];
         }
 
+        public DataTable GetProfitloss(int type, string account)
+        { 
+
+
+            string commandText = string.Format(@"select sum(luckresult) luckresult,case  when sum(luckresult)>0 then 1 else 2 end  status   
+from dbo.owzx_bettprofitloss a join owzx_bett b on a.bettid=b.bettid
+where b.lotteryid={0} and a.uid in(select uid from owzx_users where ltrim(rtrim(mobile))='{1}' ) and lotterynum = (
+select top 1 expect from owzx_lotteryrecord where type={0} and status=2 
+order  by opentime desc )
+group by a.uid", type, account);
+
+            return RDBSHelper.ExecuteTable(CommandType.Text, commandText,null)[0];
+        }
 
         /// <summary>
         ///获取彩票记录(分页)

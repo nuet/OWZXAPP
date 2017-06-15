@@ -95,7 +95,7 @@ namespace OWZX.Core
         /// <returns></returns>
         DataTable GetBJ28LotteryList(int pageNumber, int pageSize, string condition = "");
 
-
+        DataTable  GetProfitloss(int type, string account);
         /// <summary>
         ///获取彩票记录(分页)
         /// </summary>
