@@ -1,0 +1,120 @@
+﻿@model OWZX.Web.Models.RegisterModel
+@{ 
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>注册-@{@WorkContext.ShopConfig.SiteTitle}</title>
+    @Html.Raw(WorkContext.ShopConfig.SEOKeyword)
+    @Html.Raw(WorkContext.ShopConfig.SEODescription)
+    <link href="@{@WorkContext.CSSCDN}/css/base.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="@{@WorkContext.ScriptCDN}/scripts/layer/skin/layer.css" id="layui_layer_skinlayercss">
+    <script src="@{@WorkContext.ScriptCDN}/scripts/jquery.js" type="text/javascript"></script>
+    <script src="@{@WorkContext.ScriptCDN}/scripts/common.js" type="text/javascript"></script> 
+    <script src="@{@WorkContext.ScriptCDN}/scripts/layer/layer.min.js" type="text/javascript"></script>
+    <style type="text/css">
+        body,ul,p,form{margin:0;padding:0px;background:#47A1FF;}
+        .container{width:300px;margin:0 auto;background:#47A1FF;text-align:center;height:100%;}
+        .img{margin:0 auto;margin:0px;}
+        .ipt{width:260px;height:26px;line-height:26px;margin:8px 0px;font-size:0.8em;padding-left:10px;border-radius:50px;border:1px solid #f5f5f5;}
+        .bnt{background:#FFC81F;width:274px;height:34px;line-height:30px;}
+        .bnt2{background:#FFC81F;width:218px;margin:20px auto;height:30px;line-height:30px;border-radius:50px;}
+        .wz{text-align:left;padding-left:14px;height:32px;font-size:0.8em;line-height:30px;}
+        .wz a{color:#FF0;text-decoration:none;}
+        .cbox{width:16px;height:16px;vertical-align:middle;margin-top:-2px;}
+        p{font-family:Arial, Helvetica, sans-serif;color:#000;font-size:0.8em;line-height:3.0;}
+        .bnt2 a{text-decoration:none;color:#000000;}
+        p a{text-decoration:underline;color:#ffffff;}
+        .tx{width:300px;height:150px;line-height:150px;background:url(/images/img_chenggong_kuang.png) center no-repeat;margin:0 auto;font-size:1.5em;color:#ffffff;}
+        .btnspan{border-radius:50px;border-top-left-radius: 0px;border-bottom-left-radius: 0px;border:1px solid #f5f5f5;text-align: center;cursor: pointer; 
+                 height:26px;line-height:26px;padding: 0px;margin:8px -3px;font-size:0.8em;width: 80px;}
+        </style>
+</head>
+
+<body> 
+<div class="container">
+        <img src="@{@WorkContext.ScriptCDN}/images/img_dan.png" width="286" height="202" class="img" />
+        <input name="user_name" id="username" type="text" placeholder="请输入用户名" value="" class="ipt"/>
+                    <input name="user_code" id="usercode" type="text" placeholder="请输入验证码" value="" class="ipt" style="width: 180px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;"/>
+                    <input class="btnspan" value="发送验证码" readonly="readonly" />
+        <input name="password" id="password" type="password" placeholder="请输入密码" value="" class="ipt" />
+        <input name="confirmpassword" id="confirmpassword" type="password" placeholder="请输入确认密码" value="" class="ipt"/>
+         <div class="wz"><input name="cbox" type="checkbox" value="" class="cbox"/>同意<a href="xy.html" target="_blank">《注册协议》</a></div>
+        <input name="submit" id="submit" type="button" value="马上注册" class="bnt" />
+        <p>已有注册帐号，<a href="http://www.pcfc28.com/home/down" data-href="@Model.ReturnUrl"  >下载客户端</a></p>
+    </div>
+     
+   
+    <script language="javascript">
+        var _pid = getURLParameter("id");
+        if (_pid == "undefined" || _pid == "") { _pid = 0; }
+        var flag = true;
+        $('.btnspan').click(function () {
+            sendmsg();
+        }); 
+        var times = 119;
+        var kk;
+        function sendmsg() {
+            $('.btnspan').unbind('click');
+            ajax('/wap/SendMSGMobile', { mobile: $("#username").val() }, function (data) {
+                var result = eval(data); 
+                if (result.state == "success") {
+                    $('.btnspan').val('120秒后重新发送');
+                    if (times > 1) {
+                        kk = setInterval(function () { ss(); }, 1000);
+                    }
+                } else {
+                    $('.btnspan').bind('click', function () { sendmsg(); });
+                    layer.msg(result.content, { time: 1200 }); return;
+                    times = 120;
+
+                }
+            });
+        }
+        function ss() {
+            if (times > 0) {
+                $('.btnspan').val(times + '秒后重新发送');
+                times = times - 1;
+            } else {
+                if (typeof (kk) != 'undefined') {
+                    $('.btnspan').bind('click', function () { sendmsg(); });
+                    clearInterval(kk);
+                    times = 120;;
+                }
+            }
+        } 
+        $("#submit").click(function () {
+            if (!$(".cbox").is(":checked")) {
+                { layer.msg("注册前,请先选择同意注册协议", { time: 1200 }); return; }
+            } 
+            var _user_name = $("#username").val();
+            var _user_code = $("#usercode").val();
+            var _password = $("#password").val();
+            var _confirmpassword = $("#confirmpassword").val();
+            if (_user_name == '') { layer.msg("请输入手机号码", { time: 1200 }); return; }
+            if (_user_code == '') { layer.msg("请输入验证码", { time: 1200 }); return; }
+            if (_password == '') { layer.msg("请输入密码", { time: 1200 }); return; }
+            if (_confirmpassword == '') { layer.msg("请输入确认密码", { time: 1200 }); return; }
+            if (_confirmpassword != _password) { layer.msg("两次输入的密码不一致", { time: 1200 }); return; }
+            if (flag) {
+                flag = false;
+                $("#submit").attr("disabled", "true");
+                ajax("/wap/register", { username: _user_name, password: _password, pid: _pid, usercode: _user_code }, function (data) {
+                    var result = eval(data);
+                    if (result.state == "success") {
+                        $("#username").val('');
+                        $("#password").val('');
+                        $("#confirmpassword").val('');
+                        layer.msg("注册成功", { time: 1200 }, function() { location.href = "/wap/app"; });
+                    } else {
+                        $("#password").val(''); $("#confirmpassword").val(''); layer.msg(data.content); $("input:disabled").removeAttr("disabled"); flag = true;
+                    }
+                });
+            }
+        });
+    </script>
+     
+</body>
+</html>

@@ -1,0 +1,55 @@
+﻿@model List<OWZX.Model.MD_UserBackRate>
+
+@section header{
+    <title>回水规则</title>
+    <link type="text/css" rel="stylesheet" href="/administration/css/site.css" />
+    <script type="text/javascript" src="/administration/scripts/jquery.js"></script>
+    <script type="text/javascript" src="/administration/scripts/selectlist.js"></script>
+<script type="text/javascript" src="/administration/scripts/showlist.js"></script>
+}
+@section body{
+    <h1 class="rightH1">
+        系统设置 &gt;&gt; 佣金规则列表
+        <div class="right">
+            <a href="@Url.Action("adduserbackrule")" class="menuBT"><img src="/administration/images/add.jpg" />添加</a>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </h1>
+    @using (Html.BeginForm())
+    {
+        <div class="dataList">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th width="10"></th>
+                        <th width="60" align="left">编号</th>
+                        <th width="140" align="left">名称</th>
+                        <th width="180" align="left">范围下限</th>
+                        <th width="140" align="left">范围上限</th>
+                        <th width="140" align="left">佣金</th>
+                        <th width="56" align="left">管理操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (OWZX.Model.MD_UserBackRate info in Model)
+                    {
+                        
+                        <tr>
+                            <td></td>
+                            <td>@info.AutoID</td>
+                            <td>@info.Name</td>
+                            <td>@info.MinFee</td>
+                            <td>@info.MaxFee</td>
+                            <td>@info.BackFee</td>
+                            <td>
+                                @Html.ActionLink("[编辑]", "edituserbackrule", new { rateid = @info.AutoID }, new { @class = "editOperate" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+}

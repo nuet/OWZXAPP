@@ -1,0 +1,91 @@
+﻿@model OWZX.Web.Admin.Models.UserDummyListModel
+
+@section header{
+    <title>用户列表</title>
+    <link type="text/css" rel="stylesheet" href="/administration/css/site.css" />
+    <script type="text/javascript" src="/administration/scripts/jquery.js"></script>
+    <script type="text/javascript" src="/administration/scripts/showlist.js"></script>
+    <style>
+        td {
+        border-right:1px solid #ececec;
+        }
+    </style>
+}
+
+@section body{
+    <h1 class="rightH1">
+        用户管理 &gt;&gt; 虚拟用户
+        <div class="right">
+@{HashSet<string> actionlist = AdminGroups.GetAdminGroupActionHashSetNoCache(WorkContext.AdminGid);}
+@if (actionlist.Contains("user_add") || WorkContext.AdminGid == 2)
+{
+            <a href="@Url.Action("adddummy")" class="menuBT"><img src="/administration/images/add.jpg" />添加</a>
+}
+
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </h1>
+    @using (Html.BeginForm("listdummy", "user"))
+    {
+        <div class="dataList">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th width="60" align="center">编号</th>
+                        <th width="80" align="center">用户名</th>
+                        <th width ="80" align="center">图像</th>
+                            <th width="80" align="center">昵称</th>
+                        <th width="80" align="center">等级</th>
+                            <th width="80" align="center">房间名称</th>
+                            <th width="40" align="center">投注信息</th>
+                            <th width="380" align="center">内容</th>
+                            
+                            <th width="86" align="center">管理操作</th>
+</tr>
+                </thead>
+                <tbody>
+                    @foreach (OWZX.Model.MD_Dummy row in Model.UserList)
+                    {
+                        string url = "/upload/brand/thumb" + ViewData["size"].ToString() + "/" + @row.Avatar;
+                        string vip = "/images/img_" + row.Vip.ToString() + ".png";
+                        <tr>
+                           
+                            <td>@row.id</td>
+                            <td>@row.Username</td>
+                            <td><img src="@url" /></td>
+                            <td> @row.Nickname</td>
+                            <td> <img src="@vip" /></td>
+                            <td>@row.RoomName</td>
+                            <td style="padding-top:0;background:#e2dfdf;"> 
+                               
+                            <div style="text-align:center;">
+                                <span style="height: 24px; line-height: 24px;">投注金额</span><br />
+                                <span style="height: 24px; line-height: 24px;">投注类型</span><br />
+                                <span style="height: 24px; line-height: 24px;">投注时间</span>
+                            </div>
+                            </td>
+                            <td>
+                                <div style="width:100%;">
+                                    <div style="height: 24px; line-height: 24px;border-bottom:1px solid #e2dfdf;width:100%;padding-left:5px;">@row.Money</div>
+                                    <div style="height: 24px; line-height: 24px;border-bottom:1px solid #e2dfdf;width:100%;padding-left:5px;">@row.BetType</div>
+                                    <div style="height: 24px; line-height: 24px;width:100%;padding-left:5px;">@row.Bettime</div>
+                                </div>
+                            </td>
+                            <td align="center">
+                                @Html.ActionLink("[编辑]", "editdummy", new { dummyid = row.Dummyid }, new { @class = "editOperate" })
+                             
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="dataListEdit">
+            <div class="page">
+                @Html.AdminPager(Model.PageModel)
+            </div>
+        </div>
+    }
+}
+

@@ -1,0 +1,179 @@
+﻿<style type="text/css">
+.nva {width: 1220px;height: 40px;line-height: 40px;margin: 0 auto;z-index: 10;}
+
+.nva li a {color: #333333;text-decoration: none;display: block;float: left;height: 40px;line-height: 40px;padding: 0px 45px;font-size: 16px;}
+
+.on { background: #4b505a;color: #ffffff; }
+.nva .second a:hover {background: #4b505a;color: #ffffff;}
+
+.nva li {float: left;position: relative;height: 40px;line-height: 40px;}
+
+.nva li .second {position: absolute;left: 0;display: none;z-index: 16;background: #01af63;}
+.nva li .second a {font-size:16px;}
+.header_search{position: relative;z-index: 9999;float: left;width:100%;}
+.header_search .header_select_sort{height: 36px;border-right: 1px solid #eee;width: auto;background: #f9f9f9;text-decoration: none;position: relative;z-index: 120;display: inline-block;color: #666;padding-right: 15px;}
+.header_search .header_select a.header_select_sort span b {background-position: -70px 0;width: 7px;height: 4px;top: 16px;float: left;position: relative;display: inline;}
+.header_search .header_select ul {position: absolute;z-index: 99;background: #fff;top: 37px;padding: 5px 0;left: 0;display: none;}
+.header_search .header_select ul li{width: 96px;overflow: hidden;height:36px;line-height: 30px; background: #f9f9f9;    text-indent: 16px}
+.header_search .header_search_input { width: 300px;height: 30px;border: 1px solid #fff;float: left;line-height: 30px;color: #666;border: 0;display: inline;outline:none;}
+.header_search .header_select a.header_select_sort span em {float: left;height: 36px;line-height: 35px;margin: 0 10px 0 15px;font-size: 12px;display: inline;}
+.header_search .header_search_submit {border: 0;background: #01af63;width: 75px;height: 40px;text-align: center;font-size: 16px;color: #fff;cursor: pointer;outline: none;position: absolute;margin-left: 80px;top: -2px;}
+
+</style>
+<script>
+    $(document).ready(function ()
+    {
+        $('.son_ul').hide(); //初始ul隐藏
+        $('.header_select_sort').hover(function ()
+        { //鼠标移动函数
+            $(this).parent().find('ul.son_ul').slideDown();  //找到ul.son_ul显示
+            $(this).parent().find('li').hover(function () { $(this).addClass('hover') }, function () { $(this).removeClass('hover') }); //li的hover效果
+            $(this).parent().hover(function () { },
+                                   function ()
+                                   {
+                                       $(this).parent().find("ul.son_ul").slideUp();
+                                   }
+                                   );
+        }, function () { }
+                                             );
+        $('.son_ul li').click(function ()
+        {
+            $('.header_select_sort span').find('em').html($(this).html());
+            $(this).parents('li').find('ul').slideUp();
+        });
+    }
+                                             );
+</script>
+<div id="headerBar" class="bigBox">
+<div class="box">
+@*<div>更多城市</div>*@
+<div  class="headerLink">
+    @if (WorkContext.Uid < 1)
+    {
+        <a href="@Url.Action("login", "account", new RouteValueDictionary { { "returnUrl", WorkContext.Url } })">登录</a>@:&nbsp;&nbsp;
+        <a href="@Url.Action("register", "account")" class="A_b">注册</a>@:&nbsp; &nbsp; 
+    }
+    else
+    {
+        <a href="@Url.Action("orderlist", "ucenter")">@WorkContext.NickName</a>@:&nbsp; &nbsp; 
+
+        <a href="@Url.Action("logout", "account")">退出</a>@:&nbsp; &nbsp; 
+    }
+
+    @*<a href="/" style="color:#ff531b;">我要装修</a>&nbsp; &nbsp;
+    <span>咨询热线：400-900-286</span>*@
+</div>
+</div> 
+</div>
+
+<!--logo、search-->
+<div style="width:1220px;margin:0 auto;height:115px;" id="searheader">
+    <div class="logo" style="width:300px;height:55px;margin-top:28px;">
+        <img src="@{@WorkContext.ImageCDN}/images/logo.png" width="300" height="55">
+        <div class="clear"></div>
+    </div>
+
+    <div class="search" style="width:500px;height:36px; border:2px solid #00b068;margin-top:36px;margin-left:94px;">
+            <div class="header_search">
+                <div class="header_select" style="width:110px;float:left;">
+                    <a href="#" class="header_select_sort">
+                        <span>
+                            <em>建材市场</em>
+                            <b><img src="../images/xs.png" alt="" style="margin-top: -8px;"></b>
+                        </span>
+                    </a>
+                    <ul class="son_ul">
+                        <li><a href="#">工程案例</a></li>
+                        <li><a href="#">建材市场</a></li>
+                        
+                    </ul>
+                </div>
+                <input type="text" class="header_search_input" placeholder="精美工程案例" id="keyword" name="keyword" onkeydown="javascript: if (event.keyCode == 13) search();">
+                <input type="button" class="header_search_submit" value="搜 索" onclick="search();">
+            </div>
+    </div>
+    @*<div class="REP">
+        <div style="width:66px; height:55px; background:#00b068; margin-top:30px; float:left; margin-left:110px;">
+            <img src="" style="width:66px; height:55px;">
+        </div>
+        <ul style="margin-top:30px;float:right;margin-left:16px;color:#959595;">
+            <li style="font-size:14px;margin-left:39px;font-weight: bolder;margin-bottom:7px;color:#6b6b6b;">装修保</li>
+            <li style="font-size:12px;margin-bottom:5px;">免费第三方质检</li>
+            <li style="font-size:12px;">满意后付装修款 </li>
+            <div class="clear"></div>
+        </ul>
+    </div>*@
+    <div class="clear"></div>
+</div>
+<!--导航-->
+<div class="nva" >
+    <li>
+        <a href='/' class="on">首页</a>
+    </li>
+    <li>
+        <a href='/project/prjexamplelist'>工程案例</a>
+        <div class="second">
+            <a href='/project/prjexamplelist'>既往工程</a>
+            <a href='/project/prjexampletslist'>特殊处理</a>
+            <a href='/project/prjexamplenowlist'>现行工地</a>
+        </div>
+    </li>
+    <li>
+        <a href='@Url.Action("index","mall")'>建材市场</a>
+
+    </li>
+    <li>
+        <a href='/finance/userinfo'>图文资料</a>
+        <div class="second">
+            <a href='/finance/userinfo'>员工风采</a>
+            @*<a href='/finance/userinfo'>优秀员工</a>*@
+            <a href='/finance/personfinancelist'>财务报表</a>
+        </div>
+    </li>
+    <li>
+        <a href='/project/workflow'>售后服务</a>
+        <div class="second">
+            <a href='/project/workflow'>业务流程</a>
+            <a href='/project/prjprocesssear'>工程进度</a>
+            <a href='/project/addaftersales'>图片提交</a>
+            <a href='/project/owaddaftersales'>售后登记</a>
+        </div>
+    </li>
+    <li>
+        <a href='/baseinfo/companyprofile'>关于我们</a>
+        <div class="second">
+            <a href='/baseinfo/companyprofile'>公司简介</a>
+        </div>
+    </li>
+</div>
+<script>
+    //导航切换
+    $(function ()
+    {
+        var nva = 0; // 默认值为0，二级菜单向下滑动显示；值为1，则二级菜单向上滑动显示
+        if (nva == 0)
+        {
+            $('.nva li').hover(function ()
+            {
+                $(this).css("background", "#4b505a");
+                $('a', this).css("color", "#ffffff");
+                $('.second', this).css('top', '40px').show();
+            }, function ()
+            {
+                $(this).css("background", "white");
+                $('a', this).not(".on").css("color", "#333333");
+                $('.second', this).hide();
+            });
+        } else if (nva == 1)
+        {
+            $('.nva li').hover(function ()
+            {
+                $('.second', this).css('bottom', '40px').show();
+            }, function ()
+            {
+                $('.second', this).hide();
+            });
+        }
+    });
+</script>
+<div  style="border-bottom: 2px solid #00AD5E;"></div>

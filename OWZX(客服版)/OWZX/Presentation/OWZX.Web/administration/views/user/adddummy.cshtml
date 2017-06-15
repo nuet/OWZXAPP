@@ -1,0 +1,181 @@
+﻿@model OWZX.Web.Admin.Models.UserDummyModel
+
+@section header{
+    <title>添加虚拟用户</title>
+    <link type="text/css" rel="stylesheet" href="/administration/css/site.css" />
+    <script type="text/javascript" src="/administration/scripts/jquery.js"></script>
+    <script type="text/javascript" src="/administration/scripts/jquery.validate.js"></script>
+    <script type="text/javascript" src="/administration/scripts/jquery.validate.unobtrusive.js"></script>
+
+<link type="text/css" rel="stylesheet" href="/components/webuploader/webuploader.css" />
+<script type="text/javascript" src="/components/webuploader/webuploader.js"></script>
+    <script type="text/javascript">
+
+    $(function ()
+    {
+        $(".addTag li").click(function ()
+        {
+            $(".addTag li").removeClass("hot");
+            $(this).addClass("hot");
+            $(".addTable").hide().eq($(this).index()).show(0);
+        })
+
+        $(".addBt").click(function ()
+        {
+            $("form:first").submit();
+            return false;
+        })
+
+        var uploader = WebUploader.create({
+            pick: '.uploadBut',
+            auto: true,
+            swf: '/components/webuploader/Uploader.swf',
+            server: '/admin/tool/upload?operation=uploadbrandlogo',
+            fileVal: 'upload',
+            accept: {
+                title: 'Images',
+                extensions: '@ViewData["allowImgType"]',
+                mimeTypes: 'image/*'
+            },
+            fileSingleSizeLimit: '@ViewData["maxImgSize"]'
+            });
+
+            uploader.on('uploadProgress', function (file, percentage)
+            {
+                $(".uploadPreview").html("上传中...");
+            });
+
+            uploader.on('uploadSuccess', function (file, response)
+            {
+                var data = response._raw;
+                if (data == "-1")
+                    $(".uploadPreview").html('图片不能为空');
+                else if (data == "-2")
+                    $(".uploadPreview").html('图片类型不允许');
+                else if (data == "-3")
+                    $(".uploadPreview").html('图片太大');
+                else
+                {
+                    $(".uploadPreview").html("<img src=\"/upload/brand/thumb@{@ViewData["size"].ToString()}/" + data + "\"  />");
+                    $("#Avatar").val(data);
+                }
+            });
+
+            uploader.on('uploadError', function (file)
+            {
+                $(".uploadPreview").html("上传失败");
+            });
+        });
+    </script>
+}
+
+@section body{
+    <h1 class="rightH1">
+        用户管理 &gt;&gt; 添加虚拟用户
+        <div class="right">
+            <a href="@Html.Raw(ViewData["referer"].ToString())" class="menuBT"><img src="/administration/images/goback.jpg" />返回列表</a>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </h1>
+    <ul class="addTag">
+        <li class="hot"><a href="javascript:;">基本信息</a></li>
+        <div class="clear">
+        </div>
+    </ul>
+
+    @using (Html.BeginForm())
+    {
+        <input type="hidden" name="type" id="type" value="1" />
+        <input type="hidden" name="type" id="type" value="1" />
+        <div class="addTable">
+            <table width="100%">
+                <tr>
+                    <td align="right" width="60px;">昵称：</td>
+                    <td>@Html.TextBoxFor(x => x.NickName, new { @class = "input", size = "35" })@Html.ValidationMessageFor(x => x.NickName)</td>
+                </tr>
+                <tr>
+                    <td align="right">图像：</td>
+                    <td>
+                        <div class="upload">
+                            <div class="uploadPreview">
+                                @if (!string.IsNullOrEmpty(Model.Avatar))
+                                {
+                                    string url="/upload/brand/thumb"+ViewData["size"].ToString()+"/"+Model.Avatar;
+                                    <img src="@url" />
+                                }
+                                else
+                                {
+                                    @:暂无图片
+                }
+                            </div>
+                            <div class="left">
+                                <div class="uploadProgressBar"></div>
+                                <div class="uploadBut">选择图片</div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        @Html.TextBoxFor(x => x.Avatar, new { @class = "hide" })
+                        @Html.ValidationMessageFor(x => x.Avatar)
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="60px;">房间：</td>
+                    <td>
+                        <div class="left">
+                            @Html.DropDownListFor(x => x.RoomType, ViewData["roomList"] as List<SelectListItem>)@Html.ValidationMessageFor(x => x.RoomType)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="60px;">等级：</td>
+                    <td>
+                        <div class="left">
+                            @Html.DropDownListFor(x => x.Vip, ViewData["vipList"] as List<SelectListItem>)@Html.ValidationMessageFor(x => x.Vip)
+                        </div>
+                    </td>
+                </tr>
+                <tr style="height:120px">
+                    <td align="right" width="70px;" style="vertical-align:top;">投注类型：</td>
+                    <td>
+                        <div class="left" style="color:#888;"><span style="color:red;">*</span>用竖线分割，例如：(大|小)</div><br />
+                        <div class="left">
+                            @Html.TextAreaFor(x => x.BetType, new { cols = "60", rows = "4" })@Html.ValidationMessageFor(x => x.BetType)
+                        </div>
+                    </td>
+                </tr>
+                <tr style="height:120px">
+                    <td align="right" width="60px;" style="vertical-align:top;">金额：</td>
+                    <td>
+                        <div class="left" style="color:#888;"><span style="color:red;">*</span>初级房最小金额10，中高级房最小金额50;用竖线分割，例如：(50|100)</div><br />
+                        <div class="left">
+                            @Html.TextAreaFor(x => x.Money, new { cols = "60", rows = "4" })@Html.ValidationMessageFor(x => x.Money)
+                        </div>
+                    </td>
+                </tr>
+
+                <tr style="height:120px">
+                    <td align="right" width="60px;" style="vertical-align:top;">时间：</td>
+                    <td>
+                        <div class="left" style="color:#888;"><span style="color:red;">*</span>在开奖时间上提前多少秒投注(封盘时间30秒)，用竖线分割，例如：(20|100)</div><br />
+                        <div class="left">
+                            @Html.TextAreaFor(x => x.BetTime, new { cols = "60", rows = "4" })@Html.ValidationMessageFor(x => x.BetTime)
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">&nbsp;</td>
+                    <td>
+                        <a href="" class="addBt" id="sumbitBut1"><img src="/administration/images/submit.jpg" /></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+
+    }
+}

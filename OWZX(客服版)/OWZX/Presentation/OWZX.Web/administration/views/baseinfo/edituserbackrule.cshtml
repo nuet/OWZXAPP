@@ -1,0 +1,91 @@
+﻿@model OWZX.Model.MD_UserBackRate
+           
+@section header{
+    <title>编辑回水规则</title>
+    <link type="text/css" rel="stylesheet" href="/administration/css/site.css"/>
+    <script type="text/javascript" src="/administration/scripts/jquery.js"></script>
+    <link href="/components/ueditor/themes/default/css/ueditor.css" rel="stylesheet" />
+    <script src="/components/ueditor/ueditor.config.js"></script>
+<script src="/components/ueditor/ueditor.all.js"></script>
+<script src="/components/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="/administration/scripts/jquery.validate.js"></script>
+<script type="text/javascript" src="/administration/scripts/jquery.validate.unobtrusive.js"></script>
+<script type="text/javascript" src="/administration/scripts/selectlist.js"></script>
+}
+@section body{
+    <h1 class="rightH1">
+        基础资料 &gt;&gt; 回水规则
+        <div class="right">
+            <a href="@Html.Raw(ViewData["referer"].ToString())" class="menuBT"><img src="/administration/images/goback.jpg" />返回列表</a>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </h1>
+    @using(Html.BeginForm())
+    {
+        <div class="addTable">
+            <table width="100%">
+                <tr>
+                     <input type="hidden" name="autoid" value="@Model.AutoID"/>
+                    <td width="100px" align="right">
+                        名称：
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.Name, new {@class = "input", size = "35"})@Html.ValidationMessageFor(x => x.Name)
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        范围下限：
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.MinFee, new { @class = "input", size = "35" })@Html.ValidationMessageFor(x => x.MinFee)
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        范围上限：
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.MaxFee, new { @class = "input", size = "35" })@Html.ValidationMessageFor(x => x.MaxFee)
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        佣金：
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.BackFee, new { @class = "input", size = "35" })%@Html.ValidationMessageFor(x => x.BackFee)
+                    </td>
+                </tr>
+
+                
+                <tr>
+                    <td align="right">
+                        &nbsp;
+                    </td>
+                    <td>
+                        <a href="" class="addBt submit">
+                            <img src="/administration/images/submit.jpg" /></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+    <script>
+        $(".submit").on("click", function ()
+        {
+            $("form:first").submit();
+            return false;
+        });
+        </script>
+    }
+}
