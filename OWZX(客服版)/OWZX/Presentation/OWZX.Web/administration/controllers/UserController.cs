@@ -329,7 +329,31 @@ namespace OWZX.Web.Admin.Controllers
 
             return View(model);
         }
-
+        [HttpPost]
+        public ActionResult UpdAccount(int id, decimal fee)
+        {
+            UserInfo userInfo = AdminUsers.GetUserById(id);
+            if (userInfo == null)
+                return AjaxResult("success", "用户不存在");
+            var result = Users.UpdateUserAccount(id, fee);
+            if (result)
+            {
+                MD_Change achange = new MD_Change()
+                {
+                    Account = userInfo.Mobile,
+                    Accounted = userInfo.TotalMoney,
+                    Changemoney = fee,
+                    Remark = fee>1?"上分":"下分"
+                };
+                var s = NewUser.AddAChange(achange);
+                AddAdminOperateLog("修改用户账余", "修改用户账余,用户ID为:" + id);
+                return AjaxResult("success", "修改用户账余成功");
+            }
+            else
+            {
+                return AjaxResult("error", "用户账余修改失败");
+            }
+        }
 
         /// <summary>
         /// 编辑用户提现密码

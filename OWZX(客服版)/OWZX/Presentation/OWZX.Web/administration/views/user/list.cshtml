@@ -5,6 +5,12 @@
     <link type="text/css" rel="stylesheet" href="/administration/css/site.css" />
     <script type="text/javascript" src="/administration/scripts/jquery.js"></script>
     <script type="text/javascript" src="/administration/scripts/showlist.js"></script>
+        <style type="text/css">
+        .greenBT {float: right;margin-right: 20px;border: solid 1px #ddd;padding: 2px 7px;cursor: pointer;}
+        .greenBT:first-child {background: #4682b4;color: #fff; }
+        .greenBT:hover {color: #fff;background: #4682b4;opacity: 0.8;
+        }
+    </style>
 }
 
 @section body{
@@ -81,9 +87,10 @@
                             <td>@row["lastvisittime"]</td><td>@row["admingtitle"]</td>
 
                             <td>
-                                @Html.ActionLink("[编辑]", "edit", new { uid = row["uid"] }, new { @class = "editOperate" })|
-                                @Html.ActionLink("[重置提现密码]", "editdraw", new { uid = row["uid"] }, new { @class = "editOperate" })|
-                                @Html.ActionLink("[删除]", "del", new { uid = row["uid"] }, new { @class = "deleteOperate" })
+                                <a class="editOperate UpdAccount" data-id="@row["uid"]" href="javascript:void(0);">[上下分]</a>|
+                                @Html.ActionLink("[编辑]", "edit", new {uid = row["uid"]}, new {@class = "editOperate"})|
+                                @Html.ActionLink("[重置提现密码]", "editdraw", new {uid = row["uid"]}, new {@class = "editOperate"})|
+                                @Html.ActionLink("[删除]", "del", new {uid = row["uid"]}, new {@class = "deleteOperate"})
                             </td>
 
                         </tr>
@@ -96,5 +103,80 @@
                 @Html.AdminPager(Model.PageModel)
             </div>
         </div>
+         <script>
+            $(function() {
+                $('.UpdAccount').each(function(i, v) {
+                    var _this = $(v);
+                    _this.click(function () {
+                        $('.cancelbtn').click();
+                        $('#updaccountdiv').show();
+                        $('.okbtn').data('id', _this.data("id"));
+                    });
+                });
+                $('.UpdLogAccount').each(function (i, v) {
+                    var _this = $(v);
+                    _this.click(function () {
+                        $('.cancelbtn').click();
+                        $('#updlower').show();
+                        $('.okbtn1').data('id', _this.data("id"));
+                    });
+                });
+                $('.cancelbtn').click(function () {
+                    $('#updaccountdiv').hide();
+                    $('#updlower').hide();
+                    $('#iptaccount').val('');
+                    $('.okbtn').data('id', '');
+                    $('#LogAccount').val('');
+                    $('.okbtn1').data('id', '');
+                });
+                $('.okbtn').click(function() {
+                    var r = /^[-+]?\d*$/;
+                    var moneyipt = $("#iptaccount").val().replace(/,/g,'');
+                    if (!r.test(moneyipt) || moneyipt == '') {
+                        alert('上下分只能输入数字');
+                        return;
+                    } else {
+                        $.post('/admin/user/updaccount', { id: $('.okbtn').data('id'), fee: moneyipt }, function (data) {
+                            var result = eval('(' + data + ')');
+                            alert(result.content);
+                            self.location.reload();
+                        });
+                        $('.cancelbtn').click();
+                    }
+                });
+
+                $('.okbtn1').click(function () {
+                    var ipt = $("#LogAccount").val();
+                    if (ipt == "" || ipt == null) {
+                        alert('请输入用户帐号或用户ID');
+                        return;
+                    } else {
+                        $.post('/admin/user/updlower', { id: $('.okbtn1').data('id'), logaccount: ipt }, function (data) {
+                            var result = eval('(' + data + ')');
+                            alert(result.content);
+                            self.location.reload();
+                        });
+                        $('.cancelbtn').click();
+                    }
+                });
+            })
+        </script>
     }
+     <div id="updaccountdiv" style="display: none; position: absolute; top: 20%; left: 40%; background: #f0f0f0; z-index: 100; border: solid 2px #ddd; border-radius: 5px; -webkit-box-shadow: 0 0 10px rgba(0, 204, 204, .5); -moz-box-shadow: 0 0 10px rgba(0, 204, 204, .5); box-shadow: 0 0 10px rgba(0, 204, 204, .5); width: 200px; height: 120px;">
+        <div style="padding: 7px 0;"><h4 style="text-align: center;">快捷修改金额</h4>
+        </div>
+        <div style="width: 97%; height: 24px; line-height: 22px; padding: 5px;"> &nbsp;&nbsp;上下分: &nbsp;<input id="iptaccount" style="line-height: 22px; width: 120px;" value=""/>
+        </div>
+        <div style="width: 100%; margin-top: 5px;"><span  class="greenBT okbtn"> 确 定 </span><span  class="greenBT cancelbtn"> 取 消 </span></div>
+    </div>
+
+    <div id="updlower" style="display: none; position: absolute; top: 20%; left: 40%; background: #f0f0f0; z-index: 100; border: solid 2px #ddd; border-radius: 5px; -webkit-box-shadow: 0 0 10px rgba(0, 204, 204, .5); -moz-box-shadow: 0 0 10px rgba(0, 204, 204, .5); box-shadow: 0 0 10px rgba(0, 204, 204, .5); width: 240px; height: 160px;">
+        <div style="padding: 7px 0;"><h4 style="text-align: center;">会员转移</h4>
+        </div>
+        <div style="width: 100%; height: 74px; line-height: 22px; padding: 5px;">
+           <input id="LogAccount" placeholder="将下线转移到其他用户名下" style="margin-left: 12px; line-height: 22px; width: 200px;" value=""/><br/>
+            <p style="text-indent:12px; padding-top: 8px;">系统将会把当前用户转移到指定的用户ID下。 是否确定？</p>
+        </div>
+        <div style="width: 100%; margin-top: 5px;"><span  class="greenBT okbtn1"> 确 定 </span><span  class="greenBT cancelbtn"> 取 消 </span></div>
+    </div>
 }

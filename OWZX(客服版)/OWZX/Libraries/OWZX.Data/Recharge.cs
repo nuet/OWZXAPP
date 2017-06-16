@@ -62,7 +62,10 @@ namespace OWZX.Data
         {
             return BSPData.RDBS.GetRechargeList(pageNumber, pageSize, condition);
         }
-
+        public static int GetTableCount(string condition = "")
+        {
+            return BSPData.RDBS.GetTableCount(condition);
+        }
         /// <summary>
         /// 获取用户账户余额
         /// </summary>

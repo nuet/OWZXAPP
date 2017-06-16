@@ -54,6 +54,13 @@ namespace OWZX.Model
             set { remark = value; }
         }
 
+        private decimal accounted;
+        public decimal Accounted
+        {
+            get { return accounted; }
+            set { accounted = value; }
+        }
+
         private DateTime addtime;
         [JsonProperty(PropertyName="Time")]
         public DateTime Addtime

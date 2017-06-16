@@ -259,7 +259,10 @@ namespace OWZX.Data
 
             return userDetailInfo;
         }
-
+        public static bool UpdateUserAccount(int uid, decimal userRid)
+        {
+            return OWZX.Core.BSPData.RDBS.UpdateUserAccount(uid, userRid);
+        }
         /// <summary>
         /// 获得部分用户
         /// </summary>

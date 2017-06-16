@@ -110,7 +110,10 @@ namespace OWZX.Services
 
             return null;
         }
-
+        public static bool UpdateUserAccount(int uid, decimal fee)
+        {
+            return OWZX.Data.Users.UpdateUserAccount(uid, fee);
+        }
         /// <summary>
         /// 获得部分用户
         /// </summary>
