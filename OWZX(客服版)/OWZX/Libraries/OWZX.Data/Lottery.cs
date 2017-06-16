@@ -560,6 +560,7 @@ namespace OWZX.Data
         public static DataTable GetProfitListNoLottery(string type, int pageSize, int pageNumber, string start, string end)
         {
             return OWZX.Core.BSPData.RDBS.GetProfitListNoLottery(type, pageSize, pageNumber, start,end);
+
         }
         #endregion
     }

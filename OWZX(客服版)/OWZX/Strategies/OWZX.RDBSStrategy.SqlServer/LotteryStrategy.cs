@@ -1110,7 +1110,15 @@ FROM owzx_bett a
 join owzx_users b on a.uid=b.uid
 join owzx_lotteryset c on a.bttypeid=c.bttypeid
 join owzx_lotteryrecord aa on a.lotterynum=aa.expect
+<<<<<<< origin/master
 left join owzx_bettprofitloss cc on a.bettid=cc.bettid --投注记录没有合并
+=======
+<<<<<<< HEAD
+left join owzx_bettprofitloss cc on a.bettid=cc.bettid
+=======
+left join owzx_bettprofitloss cc on a.bettid=cc.bettid --投注记录没有合并
+>>>>>>> cc3e7cefd23b4caac2099ae65613afb66b3b2d37
+>>>>>>> local
 join owzx_sys_basetype d on a.roomid=d.systypeid
 join owzx_sys_basetype e on a.lotteryid=e.systypeid
 join owzx_sys_basetype f on c.type=f.systypeid
@@ -1691,6 +1699,49 @@ join owzx_sys_basetype d on a.roomtype=d.systypeid
 
 declare @total int
 select @total=(select count(1)  from #list)
+
+
+if OBJECT_ID('tempdb..#listnew') is not null
+drop table #listnew
+
+
+if exists(select 1 from #list where roomtype=22)
+begin
+select ROW_NUMBER() over(order by total ) id,* 
+into #listnew
+from (
+select bttypeid,item,odds,nums,@total total from #list where roomtype in (20,21) 
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('大','小')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('单','双')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('极大')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('大单','小单')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('大双','小双')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item ='极小'
+union all
+select * from (
+select top 200 bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=13 order by cast(item as int)
+) a
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=14 and item ='红'
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=14 and item='绿'
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=14 and item ='蓝'
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=14 and item ='豹子'
+) a
+
+delete from #list
+end
+
+
+
 
 if OBJECT_ID('tempdb..#listnew') is not null
 drop table #listnew
@@ -2499,14 +2550,18 @@ end catch
                                       GenerateInParam("@pagesize", SqlDbType.Int, 4, pageSize),
                                       GenerateInParam("@pageindex", SqlDbType.Int, 4, pageNumber)
                                   };
+
             string bet = string.Empty;string back=string.Empty ;
-            if (start != string.Empty )
+            
+            if (start != string.Empty)
             {
-                bet += " and convert(varchar(10),b.opentime,120)>='"+start+"'";
+                bet += " and convert(varchar(10),b.opentime,120)>='" + start + "'";
+
                 back += " and convert(varchar(10),addtime,120)>='" + start + "'";
             }
             if (end != string.Empty)
             {
+
                 bet += " and convert(varchar(10),b.opentime,120)<='" + end + "'";
                 back += " and convert(varchar(10),addtime,120)<='" + end + "'";
             }
@@ -2611,6 +2666,7 @@ select ERROR_MESSAGE() state
 end catch
 
 ", type, bet,back);
+
             DataTable dt = RDBSHelper.ExecuteTable(sql, parms)[0];
             return dt;
 

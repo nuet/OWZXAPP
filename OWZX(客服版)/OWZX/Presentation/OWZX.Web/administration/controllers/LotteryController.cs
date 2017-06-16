@@ -61,6 +61,7 @@ namespace OWZX.Web.Admin.Controllers
             if (lottery > 0)
                 strb.Append(" and type=" + lottery);
 
+
             DataTable dt = Lottery.GetProfitListNoLottery(type, pageSize, pageNumber,
                 start == "" ? DateTime.Now.ToString("yyyy-MM-dd") : start,
                 end == "" ? DateTime.Now.ToString("yyyy-MM-dd") : end);
