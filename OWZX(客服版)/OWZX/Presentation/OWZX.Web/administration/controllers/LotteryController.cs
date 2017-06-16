@@ -60,16 +60,17 @@ namespace OWZX.Web.Admin.Controllers
             strb.Append(" where 1=1");
             if (lottery > 0)
                 strb.Append(" and type=" + lottery);
-            if (type != string.Empty && end != "")
-                strb.Append(" and convert(varchar(10),b.opentime,120) between " + start+" and "+end);
-            DataTable dt = Lottery.GetProfitListNoLottery(type, pageSize, pageNumber, strb.ToString());
+
+            DataTable dt = Lottery.GetProfitListNoLottery(type, pageSize, pageNumber,
+                start == "" ? DateTime.Now.ToString("yyyy-MM-dd") : start,
+                end == "" ? DateTime.Now.ToString("yyyy-MM-dd") : end);
 
             ProfitStatList list = new ProfitStatList
             {
                 Lottery = lottery,
                 Type = type,
-                Start = start,
-                End = end,
+                Start = start == "" ? DateTime.Now.ToString("yyyy-MM-dd") : start,
+                End = end == "" ? DateTime.Now.ToString("yyyy-MM-dd") : end,
                 ProfitList = dt,
                 PageModel = new PageModel(pageSize, pageNumber, dt.Rows.Count > 0 ? int.Parse(dt.Rows[0]["TotalCount"].ToString()) : 0)
             };

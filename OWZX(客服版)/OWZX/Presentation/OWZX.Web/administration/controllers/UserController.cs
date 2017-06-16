@@ -11,6 +11,8 @@ using OWZX.Web.Admin.Models;
 using System.Text;
 using OWZX.Core.Helper;
 using OWZX.Model;
+using System.Configuration;
+using Newtonsoft.Json;
 
 namespace OWZX.Web.Admin.Controllers
 {
@@ -587,6 +589,30 @@ namespace OWZX.Web.Admin.Controllers
             else
             {
                 return PromptView("请输入有效的用户昵称");
+            }
+        }
+        /// <summary>
+        /// 删除虚拟用户
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public ActionResult DelDummy(string username)
+        {
+
+            try
+            {
+                string root = ConfigurationManager.AppSettings["hxurl"];
+                string hxuser = WebHelper.GetQueryString("username");
+                string hxurl = root + "/users/" + hxuser;
+                MD_AccessTokenResult token = Lottery.GetAccessToken();
+
+                
+                string js = hxurl + "$" + token.SuccessResult.access_token;
+                return Content(js);
+            }
+            catch (Exception ex)
+            {
+                return APIResult("error", "删除失败");
             }
         }
 

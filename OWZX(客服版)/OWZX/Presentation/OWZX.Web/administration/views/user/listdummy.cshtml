@@ -32,13 +32,13 @@
             <table width="100%">
                 <thead>
                     <tr>
-                        <th width="60" align="center">编号</th>
+                        <th width="40" align="center">编号</th>
                         <th width="80" align="center">用户名</th>
                         <th width ="80" align="center">图像</th>
                             <th width="80" align="center">昵称</th>
                         <th width="80" align="center">等级</th>
                             <th width="80" align="center">房间名称</th>
-                            <th width="40" align="center">投注信息</th>
+                            <th width="70" align="center">投注信息</th>
                             <th width="380" align="center">内容</th>
                             
                             <th width="86" align="center">管理操作</th>
@@ -49,7 +49,7 @@
                     {
                         string url = "/upload/brand/thumb" + ViewData["size"].ToString() + "/" + @row.Avatar;
                         string vip = "/images/img_" + row.Vip.ToString() + ".png";
-                        <tr>
+                        <tr id="tr_@row.Dummyid">
                            
                             <td>@row.id</td>
                             <td>@row.Username</td>
@@ -74,7 +74,7 @@
                             </td>
                             <td align="center">
                                 @Html.ActionLink("[编辑]", "editdummy", new { dummyid = row.Dummyid }, new { @class = "editOperate" })
-                             
+                                <a class="deleteOperate" href="javascript:del('/admin/user/deldummy?username=@row.Username',@row.Dummyid)">[删除]</a>
                             </td>
                         </tr>
                     }
@@ -86,6 +86,35 @@
                 @Html.AdminPager(Model.PageModel)
             </div>
         </div>
+        <script>
+            function del(url,id)
+            {
+                $.get(url, function (data)
+                {
+                    var dt = data.split('$');
+                    if (dt.length==2)
+                    {
+                        $.ajax({
+                            headers: {
+                                Accept: "application/json; charset=utf-8",
+                                Authorization: "Bearer " + dt[1]
+                            },
+                            type: "Delete",
+                            url: dt[0],
+                            dataType: "json",
+                            success: function (data)
+                            {
+                                $("#tr_" + id).remove();
+                            },
+                            error: function (jqXHR, textStatus, errorThrown)
+                            {
+                                
+                            }
+                        })
+                    }
+                })
+            }
+        </script>
     }
 }
 

@@ -728,9 +728,8 @@ end catch
 
             return RDBSHelper.ExecuteTable(CommandType.Text, commandText, parms)[0];
         }
-
         public DataTable GetProfitloss(int type, string account)
-        { 
+        {
 
 
             string commandText = string.Format(@"select sum(luckresult) luckresult,case  when sum(luckresult)>0 then 1 else 2 end  status   
@@ -740,7 +739,7 @@ select top 1 expect from owzx_lotteryrecord where type={0} and status=2
 order  by opentime desc )
 group by a.uid", type, account);
 
-            return RDBSHelper.ExecuteTable(CommandType.Text, commandText,null)[0];
+            return RDBSHelper.ExecuteTable(CommandType.Text, commandText, null)[0];
         }
 
         /// <summary>
@@ -1111,7 +1110,7 @@ FROM owzx_bett a
 join owzx_users b on a.uid=b.uid
 join owzx_lotteryset c on a.bttypeid=c.bttypeid
 join owzx_lotteryrecord aa on a.lotterynum=aa.expect
-left join owzx_bettprofitloss cc on a.uid=cc.uid and aa.lotteryid=cc.lotteryid
+left join owzx_bettprofitloss cc on a.bettid=cc.bettid --投注记录没有合并
 join owzx_sys_basetype d on a.roomid=d.systypeid
 join owzx_sys_basetype e on a.lotteryid=e.systypeid
 join owzx_sys_basetype f on c.type=f.systypeid
@@ -1591,13 +1590,69 @@ join owzx_sys_basetype d on a.roomtype=d.systypeid
 declare @total int
 select @total=(select count(1)  from #list)
 
+if OBJECT_ID('tempdb..#listnew') is not null
+drop table #listnew
+
+
+if exists(select 1 from #list where roomtype=22)
+begin
+select ROW_NUMBER() over(order by a.TotalCount ) id,* 
+into #listnew
+from (
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype in (20,21) 
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=12 and item in ('大','小')
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=12 and item in ('单','双')
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=12 and item in ('极大')
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=12 and item in ('大单','小单')
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=12 and item in ('大双','小双')
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=12 and item ='极小'
+union all
+select * from (
+select top 200 bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=13 order by cast(item as int)
+) a
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=14 and item ='红'
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=14 and item='绿'
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=14 and item ='蓝'
+union all
+select bttypeid,[type],settype,[item],odds,[nums],[addtime],roomtype,room,@total TotalCount from #list where roomtype =22 and type=14 and item ='豹子'
+) a
+
+delete from #list
+end
+
+
 if(@pagesize=-1)
+begin
+if exists(select 1 from #list)
 begin
 select *,@total TotalCount from #list
 end
 else
 begin
-select  *,@total TotalCount from #list where id>@pagesize*(@pageindex-1) and id <=@pagesize*@pageindex
+ select *,@total TotalCount from #listnew
+end
+
+end
+else
+begin
+if exists(select 1 from #list)
+begin
+select *,@total TotalCount from #list where id>@pagesize*(@pageindex-1) and id <=@pagesize*@pageindex
+end
+else
+begin
+ select *,@total TotalCount from #listnew where id>@pagesize*(@pageindex-1) and id <=@pagesize*@pageindex
+end
+
 end
 
 end try
@@ -1634,15 +1689,58 @@ join owzx_sys_basetype d on a.roomtype=d.systypeid
 {0}
 
 
---select distinct --lotterytype,lottery,
---type,settype from #list
+declare @total int
+select @total=(select count(1)  from #list)
 
-select bttypeid,item,odds,nums from #list order by bttypeid 
---where type=12 order by bttypeid
+if OBJECT_ID('tempdb..#listnew') is not null
+drop table #listnew
 
---select bttypeid,item,odds,nums from #list where type=13 order by bttypeid
 
---select bttypeid,item,odds,nums from #list where type=14 order by bttypeid
+if exists(select 1 from #list where roomtype=22)
+begin
+select ROW_NUMBER() over(order by total ) id,* 
+into #listnew
+from (
+select bttypeid,item,odds,nums,@total total from #list where roomtype in (20,21) 
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('大','小')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('单','双')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('极大')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('大单','小单')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item in ('大双','小双')
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=12 and item ='极小'
+union all
+select * from (
+select top 200 bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=13 order by cast(item as int)
+) a
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=14 and item ='红'
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=14 and item='绿'
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=14 and item ='蓝'
+union all
+select bttypeid,item,odds,nums,@total total from #list where roomtype =22 and type=14 and item ='豹子'
+) a
+
+delete from #list
+end
+
+
+
+if exists(select 1 from #list)
+begin
+select bttypeid,item,odds,nums from #list
+end
+else
+begin
+ select bttypeid,item,odds,nums from #listnew
+end
 
 end try
 begin catch
@@ -2395,13 +2493,23 @@ end catch
         /// <param name="pageNumber"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public DataTable GetProfitListNoLottery(string type, int pageSize, int pageNumber, string condition = "")
+        public DataTable GetProfitListNoLottery(string type, int pageSize, int pageNumber, string start, string end)
         {
             DbParameter[] parms = {
                                       GenerateInParam("@pagesize", SqlDbType.Int, 4, pageSize),
                                       GenerateInParam("@pageindex", SqlDbType.Int, 4, pageNumber)
                                   };
-
+            string bet = string.Empty;string back=string.Empty ;
+            if (start != string.Empty )
+            {
+                bet += " and convert(varchar(10),b.opentime,120)>='"+start+"'";
+                back += " and convert(varchar(10),addtime,120)>='" + start + "'";
+            }
+            if (end != string.Empty)
+            {
+                bet += " and convert(varchar(10),b.opentime,120)<='" + end + "'";
+                back += " and convert(varchar(10),addtime,120)<='" + end + "'";
+            }
             string sql = string.Format(@"
 begin try
 
@@ -2411,18 +2519,13 @@ declare @type varchar(20)='{0}'
 if OBJECT_ID('tempdb..#list') is not null
 drop table #list
 
-select a.uid,b.expect,a.betttotal,b.luckresult,convert(varchar(10),b.opentime,120) opentime,b.type
+select a.uid,lotterynum expect,money,a.bettid,c.luckresult ,convert(varchar(10),b.opentime,120) opentime,
+b.type
 into #list
-from (
-select uid,lotterynum,SUM(money) betttotal from owzx_bett
-where isread=1 group by uid,lotterynum ) a
-join (
-select a.luckresult,b.expect,a.uid,b.opentime,b.type from 
-(select uid,lotteryid,SUM(luckresult) luckresult from owzx_bettprofitloss 
-where luckresult>0 group by uid,lotteryid) a 
-join owzx_lotteryrecord b on a.lotteryid=b.lotteryid
-) b on a.uid=b.uid and a.lotterynum=b.expect
-{1}
+from owzx_bett a
+join owzx_lotteryrecord b on a.lotteryid=b.type and a.lotterynum=b.expect
+join owzx_bettprofitloss c on a.bettid=c.bettid 
+where isread=1 {1}
 
 
 if OBJECT_ID('tempdb..#listday') is not null
@@ -2442,39 +2545,47 @@ profitresult decimal(18,2),
 )
 
 
-select a.*,money backtotal 
+select a.*,isnull(money,0) backtotal 
 into #listday
 from (
-select opentime,SUM(betttotal) betttotal,SUM(luckresult) luckresult
+select opentime,SUM(money) betttotal,SUM(luckresult) luckresult
 from #list a
 group by opentime )a
-join (
+left join (
 select sum(money) money,addtime from 
-(select money,convert(varchar(10),addtime,120) addtime 
-from owzx_userback where status=2)  a  group by addtime
+(
+select money,convert(varchar(10),addtime,120) addtime 
+from owzx_userback 
+where status=2 {2}
+) a  group by addtime
 ) b on a.opentime=b.addtime
 
 if(@type='每日盈亏')
 begin
 insert into #listresult(opentime, betttotal,luckresult,backtotal, profitresult)
-select opentime, betttotal,luckresult,backtotal,betttotal-luckresult-backtotal profitresult 
+select opentime, betttotal,luckresult,backtotal,
+(case when luckresult>0 then betttotal-luckresult-backtotal else betttotal+luckresult-backtotal end) profitresult 
 from #listday a
 order by opentime
 end
 else if(@type='每周盈亏')
 begin
 insert into #listresult(opentime, betttotal,luckresult,backtotal, profitresult)
-select opentime,betttotal,luckresult,backtotal,betttotal-luckresult-backtotal profitresult 
+select opentime,betttotal,luckresult,backtotal,
+(case when luckresult>0 then betttotal-luckresult-backtotal else betttotal+luckresult-backtotal end) profitresult 
 from (
 select opentime, SUM(betttotal) betttotal,SUM(luckresult) luckresult,SUM(backtotal) backtotal  from (
 select datepart(WK,opentime) opentime, betttotal, luckresult,backtotal from #listday 
 ) a group by opentime
-) a order by opentime
+) a 
+
+order by opentime
 end
 else if(@type='每月盈亏')
 begin
 insert into #listresult(opentime, betttotal,luckresult,backtotal,profitresult)
-select opentime,betttotal,luckresult,backtotal,betttotal-luckresult-backtotal profitresult 
+select opentime,betttotal,luckresult,backtotal,
+(case when luckresult>0 then betttotal-luckresult-backtotal else betttotal+luckresult-backtotal end) profitresult 
 from (
 select opentime,SUM(betttotal) betttotal,SUM(luckresult) luckresult,SUM(backtotal) backtotal  from (
 select datepart(month,opentime) opentime, betttotal,luckresult,backtotal from #listday 
@@ -2499,7 +2610,7 @@ begin catch
 select ERROR_MESSAGE() state
 end catch
 
-", type, condition);
+", type, bet,back);
             DataTable dt = RDBSHelper.ExecuteTable(sql, parms)[0];
             return dt;
 

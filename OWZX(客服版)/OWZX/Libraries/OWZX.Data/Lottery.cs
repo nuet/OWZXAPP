@@ -557,9 +557,9 @@ namespace OWZX.Data
         /// <param name="pageNumber"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public static DataTable GetProfitListNoLottery(string type, int pageSize, int pageNumber, string condition = "")
+        public static DataTable GetProfitListNoLottery(string type, int pageSize, int pageNumber, string start, string end)
         {
-            return OWZX.Core.BSPData.RDBS.GetProfitListNoLottery(type, pageSize, pageNumber, condition);
+            return OWZX.Core.BSPData.RDBS.GetProfitListNoLottery(type, pageSize, pageNumber, start,end);
         }
         #endregion
     }

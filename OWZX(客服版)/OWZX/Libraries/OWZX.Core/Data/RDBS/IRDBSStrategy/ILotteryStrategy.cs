@@ -410,7 +410,7 @@ namespace OWZX.Core
         /// <param name="pageNumber"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        DataTable GetProfitListNoLottery(string type, int pageSize, int pageNumber, string condition = "");
+        DataTable GetProfitListNoLottery(string type, int pageSize, int pageNumber, string start, string end);
         #endregion
 
     }
