@@ -252,6 +252,8 @@
     <Content Include="images\1111.jpg" />
     <Content Include="images\2222.jpg" />
     <Content Include="images\ex.png" />
+    <Content Include="images\laba.png" />
+    <Content Include="images\stoplab.png" />
     <Content Include="menu\2.js" />
     <Content Include="css\site.css" />
     <Content Include="images\a.jpg" />
@@ -287,9 +289,13 @@
     <Content Include="images\top_bg.jpg" />
     <Content Include="images\tree_close.gif" />
     <Content Include="images\tree_open.gif" />
+    <Content Include="scripts\cookie.js" />
+    <Content Include="scripts\draw.mp3" />
     <Content Include="scripts\excanvas.js" />
     <Content Include="scripts\jquery.flot.js" />
     <Content Include="scripts\jquery.flot.pie.js" />
+    <Content Include="scripts\jquery.jplayer.min.js" />
+    <Content Include="scripts\jquery.jplayer.swf" />
     <Content Include="scripts\jquery.js" />
     <Content Include="scripts\jquery.validate.js" />
     <Content Include="scripts\jquery.validate.unobtrusive.js" />
@@ -299,6 +305,7 @@
     <Content Include="scripts\region.js" />
     <Content Include="scripts\selectlist.js" />
     <Content Include="scripts\showlist.js" />
+    <Content Include="scripts\xiaoxi.mp3" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

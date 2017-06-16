@@ -184,7 +184,7 @@ namespace OWZX.Core
         /// <param name="userName">用户名</param>
         /// <returns></returns>
         IDataReader GetPartUserByName(string userName);
-
+        bool UpdateUserAccount(int uid, decimal fee);
         /// <summary>
         /// 获得部分用户
         /// </summary>

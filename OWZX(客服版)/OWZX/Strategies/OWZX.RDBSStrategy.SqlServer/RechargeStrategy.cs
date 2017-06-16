@@ -183,6 +183,18 @@ end catch
             return RDBSHelper.ExecuteDataset(CommandType.Text, commandText, parms).Tables[0];
         }
 
+        public int GetTableCount(string strsql)
+        {
+            try
+            {
+                return  Convert.ToInt32(RDBSHelper.ExecuteScalar(CommandType.Text, strsql, null));
+            }
+            catch
+            {
+                return 0;
+            }
+            
+        }
 
         /// <summary>
         /// 获取用户账户余额

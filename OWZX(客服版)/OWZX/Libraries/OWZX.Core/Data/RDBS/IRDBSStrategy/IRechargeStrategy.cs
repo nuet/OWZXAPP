@@ -47,7 +47,7 @@ namespace OWZX.Core
         /// <returns></returns>
         DataTable GetRechargeList(int pageNumber, int pageSize, string condition = "");
 
-
+        int GetTableCount(string condition);
 
         /// <summary>
         /// 获取账户余额

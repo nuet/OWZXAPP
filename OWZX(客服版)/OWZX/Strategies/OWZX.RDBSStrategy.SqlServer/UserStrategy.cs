@@ -431,6 +431,12 @@ delete from owzx_onlineusers where uid={1}", RDBSHelper.RDBSTablePre, uid);
             return RDBSHelper.ExecuteNonQuery(CommandType.Text, sql) >1 ? true : false;
         }
 
+        public bool UpdateUserAccount(int uid, decimal fee)
+        {
+            string commandText = string.Format(" UPDATE [{0}users] SET totalmoney=totalmoney+{1} WHERE [uid]={2} ",
+                                               RDBSHelper.RDBSTablePre, fee, uid);
+            return RDBSHelper.ExecuteNonQuery(CommandType.Text, commandText) > 0;
+        }
         /// <summary>
         /// 获得用户细节
         /// </summary>

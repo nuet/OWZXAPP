@@ -103,6 +103,11 @@ namespace OWZX.Services
             return dt;
         }
 
+        public static int  GetTableCount(string strsql = "")
+        { 
+           int result = OWZX.Data.Recharge.GetTableCount(strsql);
+           return result;
+        }
        
         #endregion
 

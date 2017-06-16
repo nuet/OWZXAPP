@@ -196,6 +196,25 @@ namespace OWZX.Web.Admin.Controllers
             //var fileName = Server.MapPath("~/Files/fileName.xls");
             //return File(fileName, "application/ms-excel", "fileName.xls");
         }
+
+
+        public JsonResult GetDrawCount(string tablename)
+        {
+            string strsql = @"select count(1) from owzx_userdraw where state in(0,1)";
+            if (tablename.ToLower() == "owzx_userremit")
+            {
+                strsql = @"select count(1) from owzx_userremit where status in(0,1)";
+            }
+            var result = Recharge.GetTableCount(strsql);
+            Dictionary<string, object> JsonDictionary = new Dictionary<string, object>();
+            JsonDictionary.Add("result", result);
+            return new JsonResult
+            {
+                Data = JsonDictionary,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
         #endregion
 
         /// <summary>
