@@ -1,0 +1,160 @@
+﻿@using System
+@model OWZX.Web.Admin.Models.UserListModel
+
+@section header{
+    <title>用户列表</title>
+    <link type="text/css" rel="stylesheet" href="/administration/css/site.css"/>
+    <script type="text/javascript" src="/administration/scripts/jquery.js"></script>
+    <script type="text/javascript" src="/administration/scripts/showlist.js"></script>
+    <style type="text/css">
+        .greenBT {float: right;margin-right: 20px;border: solid 1px #ddd;padding: 2px 7px;cursor: pointer;}
+        .greenBT:first-child {background: #4682b4;color: #fff; }
+        .greenBT:hover {color: #fff;background: #4682b4;opacity: 0.8;
+        }
+    </style>
+}
+
+@section body{
+    <h1 class="rightH1">
+        用户管理 &gt;&gt; 用户列表
+      @*  <div class="right">
+            @{HashSet<string> actionlist = AdminGroups.GetAdminGroupActionHashSetNoCache(WorkContext.AdminGid);}
+            @if (actionlist.Contains("user_add") || WorkContext.AdminGid == 2)
+            {
+                <a href="@Url.Action("add")" class="menuBT"><img src="/administration/images/add.jpg"/>添加</a>
+            }
+
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>*@
+    </h1>
+    @using (Html.BeginForm("lowerlist", "user"))
+    {
+        <div class="dataListSearch">
+            <table height="32">
+                <tbody>
+                <tr>
+                    <td width="35"><img id="searchImg" src="/administration/images/search1.gif"/></td>
+
+                    <td style="display: none;">
+                        用户名：
+                    </td>
+                    <td width="130" style="display: none;">
+                        @Html.TextBox("UserName", Model.UserName, new {height = "18"})
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;&nbsp;上级代理：
+                    </td>
+                    <td width="130">
+                        @Html.TextBox("Mobile", Model.Mobile, new {height = "18"})
+                    </td> 
+                    <td style="height: 24px;">
+                        <input id="SearchUser" name="SearchUser" type="image" class="searchBut submit" src="/administration/images/s.jpg" style="vertical-align: middle;" height="24"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="dataList">
+            <table width="100%">
+                <thead>
+                <tr>
+                    <th width="10"></th>
+                    <th width="60" align="left">编号</th>
+                    <th width="80" align="left">上级帐号</th>
+                    <th width="80" align="left">上级昵称</th>
+                    <th width="80" align="left">登录帐号</th> 
+                    <th width="80" align="left">昵称</th>
+                    <th width="80" align="left">账户余额</th>
+                    <th width="80" align="left">投注总额</th>
+                    <th width="80" align="left">中奖总额</th>
+                    <th width="80" align="left">游戏返水</th>
+                    <th width="80" align="left">下级返水</th>
+                    <th width="80" align="left">充值总额</th>
+                    <th width="80" align="left">提现总额</th>
+                    <th width="80" align="left">下级数量</th>
+                    <th width="80" align="left">盈利</th>
+                    <th width="80" align="left">注册时间</th>
+                    <th width="80" align="left">访问时间</th>
+                    <th width="186" align="center">管理操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (DataRow row in Model.UserList.Rows)
+                {
+                    <tr>
+                        <td></td>
+                        <td>@row["id"]</td>
+                        <td>@{string pemail = @row["Pmobile"].ToString();pemail = CommonHelper.HideMobile(pemail);} @pemail</td>
+                        <td>@row["Pnickname"].ToString()</td>
+                        <td>@{string email = @row["mobile"].ToString(); email = CommonHelper.HideMobile(email);} @email</td>
+                        <td>@row["nickname"].ToString()</td>
+                         <td>@Convert.ToInt64(row["totalmoney"]).ToString("N0")</td> 
+                        <td>@Convert.ToInt64(row["bettfee"]).ToString("N0")</td>
+                        <td>@Convert.ToInt64(row["winfee"]).ToString("N0")</td>
+                        <td>@Convert.ToInt64(row["backfee"]).ToString("N0")</td>
+                        <td>@Convert.ToInt64(row["xjbackfee"]).ToString("N0")</td>
+                        <td>@Convert.ToInt64(row["payfee"]).ToString("N0")</td>
+                        <td>@Convert.ToInt64(row["drawfee"]).ToString("N0")</td>
+                        <td>@Convert.ToInt64(row["usercount"]).ToString()</td>
+                        <td>@Convert.ToInt64(row["ylfee"]).ToString("N0")</td>
+                        <td>@row["registertime"]</td>
+                        <td>@row["lastvisittime"]</td> 
+                        <td> 
+                            <a class="editOperate" href="/admin/newuser/ChangeList?Account=@row["mobile"]">[帐变记录]</a>|
+                            <a class="editOperate" data-id="@row["uid"]" href="/admin/lottery/lotterylist?Account=@row["mobile"]">[投注记录]</a>|
+                            <a class="editOperate" href="/admin/newuser/backlist?Account=@row["mobile"]">[回水记录]</a>|
+                        </td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <div class="dataListEdit">
+            <div class="page">
+                @Html.AdminPager(Model.PageModel)
+            </div>
+        </div>
+        <script>
+            $(function() {
+                $('.UpdAccount').each(function(i, v) {
+                    var _this = $(v);
+                    _this.click(function() {
+                        $('#updaccountdiv').show();
+                        $('.okbtn').data('id', _this.data("id"));
+                    });
+                });
+                $('.cancelbtn').click(function () { $('#updaccountdiv').hide();
+                    $('#iptaccount').val('');
+                    $('.okbtn').data('id', '');
+                });
+                $('.okbtn').click(function() {
+                    var r = /^[-+]?\d*$/;
+                    var moneyipt = $("#iptaccount").val().replace(/,/g,'');
+                    if (!r.test(moneyipt) || moneyipt == '') {
+                        alert('上下分只能输入数字');
+                        return;
+                    } else {
+                        $.post('/admin/user/updaccount', { id: $('.okbtn').data('id'), fee: moneyipt }, function (data) {
+                            var result = eval('(' + data + ')');
+                            alert(result.content);
+                            self.location.reload();
+                        });
+                        $('#updaccountdiv').hide();
+                        $('#iptaccount').val('');
+                        $('.okbtn').data('id', '');
+                    }
+                });
+            })
+        </script>
+    }
+    <div id="updaccountdiv" style="display: none; position: absolute; top: 20%; left: 40%; background: #f0f0f0; z-index: 100; border: solid 2px #ddd; border-radius: 5px; -webkit-box-shadow: 0 0 10px rgba(0, 204, 204, .5); -moz-box-shadow: 0 0 10px rgba(0, 204, 204, .5); box-shadow: 0 0 10px rgba(0, 204, 204, .5); width: 200px; height: 120px;">
+        <div style="padding: 7px 0;"><h4 style="text-align: center;">快捷修改金额</h4>
+        </div>
+        <div style="width: 97%; height: 24px; line-height: 22px; padding: 5px;"> &nbsp;&nbsp;上下分: &nbsp;<input id="iptaccount" style="line-height: 22px; width: 120px;" value=""/>
+        </div>
+        <div style="width: 100%; margin-top: 5px;"><span  class="greenBT okbtn"> 确 定 </span><span  class="greenBT cancelbtn"> 取 消 </span></div>
+    </div>
+}

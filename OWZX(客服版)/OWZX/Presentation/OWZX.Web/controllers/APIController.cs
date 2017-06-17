@@ -521,6 +521,10 @@ namespace OWZX.Web.controllers
             try
             {
                 NameValueCollection parmas = WorkContext.postparms;
+                if (parmas.Count == 0)
+                {
+                    return APIResult("error", "请求参数错误");
+                }
                 int page = int.Parse(parmas["page"]);
                 DataTable dt = News.GetNewsList(10, page, "where newstypeid=2");
                 List<MD_NewsInfo> list = (List<MD_NewsInfo>)ModelConvertHelper<MD_NewsInfo>.ConvertToModel(dt);
@@ -528,7 +532,7 @@ namespace OWZX.Web.controllers
                 {
                     list.ForEach((x) =>
                     {
-                        x.Body = BSPConfig.ShopConfig.SiteUrl + "/home/notice/" + x.NewsId.ToString();
+                        x.Body = BSPConfig.ShopConfig.SiteUrl + "/hometice/" + x.NewsId.ToString();
                     });
                     JsonSerializerSettings jsetting = new JsonSerializerSettings();
                     jsetting.DateFormatString = "yyyy-MM-dd HH:mm:ss";

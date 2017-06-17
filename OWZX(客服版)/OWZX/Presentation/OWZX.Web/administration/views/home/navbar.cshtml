@@ -6,47 +6,137 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>后台导航栏</title>
+      <script type="text/javascript" src="/administration/scripts/jquery.js"></script>
+     <script type="text/javascript" src="/administration/scripts/jquery.jplayer.min.js"></script>
+        <script type="text/javascript" src="/administration/scripts/cookie.js"></script>
     <style type="text/css">
-        *{ margin:0;padding:0;}
-        * html body{ overflow:visible;}
-        body{ font:12px/22px 'Microsoft Yahei',Verdana,Arial,sans-serif,"Times New Roman"; word-wrap:break-word; }
-        body,ul,li,img,div{ margin:0; padding:0;}
-        body div{ text-align:left;}
-        li{ list-style-type:none;}
-        img{ border:0 none;}
-        a:hover{ color:#9f0017;}
-        a:link, a:visited{ text-decoration:none; color:#000;}
-        a { outline:none;color:#000;}
-        .clear{ clear:both;}
-        .left{ float:left;}
-        .right{ float:right;}
+        * {margin: 0;padding: 0;}
+        * html body { overflow: visible; }
+        body {font: 12px/22px 'Microsoft Yahei', Verdana, Arial, sans-serif, "Times New Roman";word-wrap: break-word; }
+        body, ul, li, img, div {margin: 0;padding: 0;}
+        body div { text-align: left; }
+        li { list-style-type: none; }
+        img { border: 0 none; }
+        a:hover { color: #9f0017; }
+        a:link, a:visited {text-decoration: none;color: #000;}
+        a {outline: none;color: #000;}
+        .clear { clear: both; }
+        .left { float: left; }
+        .right { float: right; }
 
         /*头部*/
-        .top{ padding:0px 20px 0px 0px;background:url(/administration/images/top_bg.jpg) repeat-x 0px 26px #19597d; height:70px;}
-        .top_info{ padding-left:10px; height:30px; line-height:30px; color:#FFF;}
-        .top_info .left{ background:url(/administration/images/ico1.jpg) no-repeat left 8px; padding-left:17px;}
-        .top a img{ margin-top:1px;}
-        
-        #nav li{ float:left; padding-left:20px;}
-        #nav li a{ font-size:14px; color:#d9e6ed; height:38px; line-height:38px; display:block; text-align:center;}
-        #nav li a:hover{color:#FFF; }
+        .top {padding: 0px 20px 0px 0px;background: url(/administration/images/top_bg.jpg) repeat-x 0px 26px #19597d;height: 70px;}
+        .top_info {padding-left: 10px;height: 30px;line-height: 30px;color: #FFF;}
+        .top_info .left {background: url(/administration/images/ico1.jpg) no-repeat left 8px;padding-left: 17px;}
+        .top a img { margin-top: 1px; }
+
+        #nav li {float: left;padding-left: 20px;}
+        #nav li a {font-size: 14px;color: #d9e6ed;height: 38px;line-height: 38px;display: block;text-align: center;}
+        #nav li a:hover { color: #FFF; }
     </style>
+<style type="text/css">
+    #winpop {width: 180px;height: 70px;position: fixed;right: 48%;bottom: 0px;border: 1px solid #2F73B8;color: #fff;margin: 0;padding: 1px;overflow: hidden;display: none;background: #FFFFFF}
+    #winpop .title {width: 100%;height: 20px;line-height: 20px;color: #fff;background: #2F73B8;font-weight: bold;text-align: center;font-size: 12px;}
+    #winpop .title span { color: #fff; }
+    #winpop .con {width: 100%;height: 50px;line-height: 50px;font-weight: bold;font-size: 12px;color: #FF0000;text-decoration: underline;text-align: center}
+    #winpop .con a {font-weight: bold;font-size: 12px;color: #FF0000;text-decoration: underline;text-align: center}
+    #silu {font-size: 13px;color: #999999;position: absolute;right: 0;text-align: right;text-decoration: underline;line-height: 22px;}
+    .close2 {position: absolute;right: 4px;top: -1px;color: #FFFFFF;cursor: pointer}
+</style>
 </head>
 <body>
-    <div class="top">
-        <div class="top_info">
-            <div class="left">
-                欢迎您：<strong>@WorkContext.UserName</strong></div>
-            <div class="right">
-                今天是：@CommonHelper.GetChineseDate() @CommonHelper.GetWeek()</div>
-            <div class="clear">
-            </div>
+<div class="top">
+    <div class="top_info">
+        <div class="left">
+            欢迎您：<strong>@WorkContext.UserName</strong>
         </div>
-        <a id="logo" class="left">
-            @*<img src="/administration/images/logo.jpg" height="36" />*@</a>
-        <ul class="right" id="nav">
-            <li><a href="@Url.Action("logout", "account", new { area = "admin" })" target="_top">退出系统</a></li>
-        </ul>
+        <div class="right">
+            今天是：@CommonHelper.GetChineseDate() @CommonHelper.GetWeek()</div>
+        <div class="clear">
+        </div>
     </div>
+    <a id="logo" class="left">
+        @*<img src="/administration/images/logo.jpg" height="36" />*@</a>
+    <ul class="right" id="nav">
+        <li><a href="@Url.Action("logout", "account", new {area = "admin"})" target="_top">退出系统</a></li>
+    </ul>
+</div>
+    <div id="jquery_jplayer_1" style="display: none;"></div>
+<div id="jquery_jplayer_2" style="display: none;"></div>
+<div id="winpop">
+    <div class="title">您有新<span id="spanhref"></span>消息<span class="close2" onclick="tips_pop()">X</span></div>
+    <div class="con"><img id="mset" style="width: 20px; height: 20px; cursor: pointer;" src="/administration/images/laba.png"/>&nbsp;<a id="hrefurl" target='frameRight'></a>
+    </div>
+</div>
+<script type="">
+    $(function() {
+        $("#jquery_jplayer_1").jPlayer({
+            ready: function() {
+                $(this).jPlayer("setMedia",
+                {
+                    mp3: "/administration/scripts/draw.mp3"
+                });
+            },
+            swfPath: "/administration/script",
+            supplied: "mp3",
+            wmode: "window"
+        });
+        $("#jquery_jplayer_2").jPlayer({
+            ready: function () {
+                $(this).jPlayer("setMedia",
+                {
+                    mp3: "/administration/scripts/xiaoxi.mp3"
+                });
+            },
+            swfPath: "/administration/script",
+            supplied: "mp3",
+            wmode: "window"
+        });
+        setInterval(function () { getCZCount('owzx_userremit') }, 15000);
+        setInterval(function () { getCZCount('owzx_userdraw') }, 30000);
+        if (getCookie("htpmusic") != "1") {
+            $('#mset').attr('src', '/administration/images/laba.png');
+        } else {
+            $('#mset').attr('src', '/administration/images/stoplab.png');
+        }
+        $('#mset').click(function () {
+            console.log(getCookie("htpmusic"));
+            if (getCookie("htpmusic") != "1") {
+                $('#mset').attr('src', '/administration/images/stoplab.png');
+                setCookie("htpmusic", 1, "1");
+            } else {
+
+                $('#mset').attr('src', '/administration/images/laba.png');
+
+                setCookie("htpmusic", 2, "1");
+            }
+        });
+    });
+    var showcontent;
+    var hidecontent;
+    function getCZCount(name) {
+        $.post('/admin/Draw/GetDrawCount', { tablename: name }, function (data) {
+            if (data.result > 0) {
+                console.log(getCookie("stopmusic"));
+                if (name == "UserOrders") {
+                    if (getCookie("htpmusic") != "1") {
+                        $("#jquery_jplayer_1").jPlayer('play');
+                    }
+                } else {
+                    if (getCookie("htpmusic") != "1") {
+                        $("#jquery_jplayer_2").jPlayer('play');
+                    }
+                }
+                $('#spanhref').html(name == "owzx_userremit" ? "充值" : "提现");
+                $('#hrefurl').attr("href", name == "owzx_userremit" ? "/admin/newuser/remitlist" : "/admin/draw/drawlist").html("统计数量(" + data.result + ")");
+                $("#winpop").fadeIn(900);
+            }
+        });
+    }
+
+    function tips_pop() {
+        $("#winpop").fadeOut(700);
+    }
+    </script>
 </body>
 </html>

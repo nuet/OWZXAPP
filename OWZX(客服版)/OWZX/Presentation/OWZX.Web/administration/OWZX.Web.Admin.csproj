@@ -243,6 +243,7 @@
     <None Include="views\user\edit.cshtml" />
     <None Include="views\user\listdummy.cshtml" />
     <None Include="views\user\list.cshtml" />
+    <None Include="views\user\lowerlist.cshtml" />
     <None Include="views\Web.config" />
     <None Include="views\_ViewStart.cshtml" />
     <None Include="Web.config" />

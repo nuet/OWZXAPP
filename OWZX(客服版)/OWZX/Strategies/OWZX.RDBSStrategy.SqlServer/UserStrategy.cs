@@ -925,6 +925,68 @@ end catch
             else
                 return ds.Tables[0];
         }
+
+        /// <summary>
+        /// 获取用户和父级列表
+        /// </summary>
+        /// <param name="pageSize">-1时 获取全部数据</param>
+        /// <param name="pageNumber"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public DataTable GetUserParentList(int pageSize, int pageNumber, string condition = "")
+        {
+            DbParameter[] parms = {
+                                      GenerateInParam("@pagesize", SqlDbType.Int, 4, pageSize),
+                                      GenerateInParam("@pageindex", SqlDbType.Int, 4, pageNumber)
+                                  };
+            string sql = string.Format(@"begin try 
+
+
+if OBJECT_ID('tempdb..#list') is not null
+  drop table #list
+
+select ROW_NUMBER() over(order by a.uid desc) id, a.uid,a.username,
+a.mobile,a.nickname,a.totalmoney, convert(varchar(25),b.registertime,120) registertime,
+convert(varchar(25),b.lastvisittime,120) lastvisittime,c.title AS admingtitle,d.mobile as Pmobile,d.nickname as Pnickname ,
+isnull(e.backfee,0) backfee,isnull(e.xjbackfee,0) xjbackfee,isnull(e.bettfee ,0) bettfee,isnull(e.winfee,0) winfee,isnull(e.payfee,0) payfee,isnull(e.drawfee,0)drawfee,
+isnull(e.ylfee,0) ylfee,isnull(e.usercount,0) usercount
+into #list
+from owzx_users a
+join owzx_users d on a.ParentID=d.Uid  
+left join (
+select uid, sum(backfee) backfee ,sum(xjbackfee) xjbackfee,sum(bettfee) bettfee,sum(winfee) winfee,sum(payfee) payfee,sum(drawfee) drawfee,sum(ylfee) ylfee,max(usercount) usercount
+ from  dbo.owzx_userreportday group  by uid ) e on a.uid=e.uid
+join owzx_userdetails b on a.uid=b.uid 
+LEFT JOIN [owzx_admingroups] c ON c.[admingid]=a.[admingid]  {0}
+
+
+if(@pagesize=-1)
+begin
+select * ,(select count(1) from #list) TotalCount from #list 
+end
+else
+begin
+select * ,(select count(1) from #list) TotalCount from #list where id>@pagesize*(@pageindex-1) and id <=@pagesize*@pageindex
+end
+
+
+end try
+begin catch
+
+select ERROR_MESSAGE() error
+end catch
+
+
+
+", condition);
+
+            DataSet ds = RDBSHelper.ExecuteDataset(CommandType.Text, sql, parms);
+            if (ds == null || ds.Tables.Count == 0)
+                return new DataTable();
+            else
+                return ds.Tables[0];
+        }
+        /// <summary>
         /// <summary>
         /// 获取团队列表
         /// </summary>
