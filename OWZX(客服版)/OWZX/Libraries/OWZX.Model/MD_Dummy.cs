@@ -60,7 +60,18 @@ namespace OWZX.Model
         /// 等级
         /// </summary>
         public int Vip { get; set; }
+
+        /// <summary>
+        /// 休息起始
+        /// </summary>
+        public string Start { get; set; }
+
+        /// <summary>
+        /// 休息截止
+        /// </summary>
+        public string End { get; set; }
         public int totalcount { get; set; }
+
         private DateTime addtime;
         public DateTime Addtime
         {

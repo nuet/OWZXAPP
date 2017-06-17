@@ -537,7 +537,9 @@ namespace OWZX.Web.Admin.Controllers
                     BetType =model.BetType,
                     RoomName = model.RoomType,
                     Avatar=model.Avatar,
-                    Vip=int.Parse(model.Vip)
+                    Vip = int.Parse(model.Vip)//,
+                    //Start=model.Start.Length==1?"0"+model.Start:model.Start,
+                    //End = model.End.Length == 1 ? "0" + model.End : model.End,
                 };
                 DataTable result = NewUser.UpdateDummyUser(dum);
                 if (result == null || result.Rows.Count == 0)
@@ -699,7 +701,7 @@ namespace OWZX.Web.Admin.Controllers
             vipList.Add(new SelectListItem() { Text = "钻石", Value = "5" });
             vipList.Add(new SelectListItem() { Text = "至尊", Value = "6" });
             ViewData["vipList"] = vipList;
-            
+
 
             string allowImgType = string.Empty;
             string[] imgTypeList = StringHelper.SplitString(BSPConfig.ShopConfig.UploadImgType, ",");

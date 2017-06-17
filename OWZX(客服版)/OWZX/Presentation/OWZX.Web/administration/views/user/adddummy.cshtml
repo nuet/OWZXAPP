@@ -135,6 +135,16 @@
                         </div>
                     </td>
                 </tr>
+                @*<tr>
+                    <td align="right" width="60px;">休息时间：</td>
+                    <td>
+                        <div class="left">
+                            <input type="text" class="Wdate" name="Start" id="Start" placeholder="开始时间" onfocus="WdatePicker({ maxDate: '#F{$dp.$D(\'End\')}', dateFmt: 'yyyy-MM-dd' })" value="@Model.Start" autocomplete="off" />
+                            至
+                            <input type="text" class="Wdate" name="End" id="End" placeholder="结束时间" onfocus="WdatePicker({ minDate: '#F{$dp.$D(\'Start\')}', dateFmt: 'yyyy-MM-dd'})" value="@Model.End" autocomplete="off" />
+                        </div>
+                    </td>
+                </tr>*@
                 <tr style="height:120px">
                     <td align="right" width="70px;" style="vertical-align:top;">投注类型：</td>
                     <td>

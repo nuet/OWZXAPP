@@ -237,6 +237,22 @@ namespace OWZX.Web.Admin.Models
         [Required]
         [DisplayName("用户等级")]
         public string Vip { get; set; }
+
+        /// <summary>
+        /// 休息起始
+        /// </summary>
+        [Required]
+        [DisplayName("休息起始")]
+        [Range(1, 23, ErrorMessage = "休息时间无效")]
+        public string Start { get; set; }
+
+        /// <summary>
+        /// 休息截止
+        /// </summary>
+        [Required]
+        [DisplayName("休息截止")]
+        [Range(1,23,ErrorMessage="休息时间无效")]
+        public string End { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
              //验证Base64字符串的正则表达式
@@ -258,6 +274,10 @@ namespace OWZX.Web.Admin.Models
             if (!info.IsMatch(BetTime))
             {
                 errorList.Add(new ValidationResult("请输入有效的投注时间!", new string[] { "BetTime" }));
+            }
+            if (int.Parse(End) < int.Parse(Start))
+            {
+                errorList.Add(new ValidationResult("请选择有效的休息时间段!", new string[] { "BetTime" }));
             }
             return errorList;
         }

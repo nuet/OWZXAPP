@@ -1060,7 +1060,7 @@ if OBJECT_ID('tempdb..#list') is not null
 
 select ROW_NUMBER() over(order by dummyid) id,[dummyid]
 ,[username]
-,[nickname],money,bettime,roomname,bettype,isnull(avatar,'') avatar,vip
+,[nickname],money,bettime,roomname,bettype,isnull(avatar,'') avatar,vip,start,end
 into #list
 FROM [owzx_dummyinfo] 
 {0}
@@ -1101,7 +1101,9 @@ end catch
                                       GenerateInParam("@bettype", SqlDbType.VarChar, 500, info.BetType),
                                       GenerateInParam("@roomname", SqlDbType.VarChar, 50, info.RoomName),
                                       GenerateInParam("@avatar", SqlDbType.VarChar, 50, info.Avatar),
-                                      GenerateInParam("@vip", SqlDbType.Int, 4, info.Vip)
+                                      GenerateInParam("@vip", SqlDbType.Int, 4, info.Vip),
+                                      GenerateInParam("@start", SqlDbType.VarChar, 5, info.Start),
+                                      GenerateInParam("@end", SqlDbType.VarChar, 5, info.End)
                                       
                                   };
             string sql = string.Format(@"
@@ -1112,7 +1114,9 @@ if exists(select 1 from owzx_dummyinfo where dummyid=@dummyid)
 begin
 if not exists(select 1 from owzx_dummyinfo where dummyid !=@dummyid and nickname=@nickname)
 begin
-update a set a.nickname=@nickname,a.money=@money,a.bettime=@bettime,a.bettype=@bettype,a.roomname=@roomname,avatar=@avatar,vip=@vip
+update a set a.nickname=@nickname,a.money=@money,a.bettime=@bettime,
+a.bettype=@bettype,a.roomname=@roomname,avatar=@avatar,vip=@vip,
+a.start=@start,a.end=@end
 from owzx_dummyinfo a where dummyid=@dummyid
 
 select '成功' state,'' username
@@ -1130,8 +1134,8 @@ else
 begin
 if not exists(select 1 from owzx_dummyinfo where nickname=@nickname)
 begin
-INSERT INTO [owzx_dummyinfo]([username],[nickname],money,bettime,roomname,bettype,avatar,vip)
-VALUES('usn'+rtrim(cast((select count(1)+1 from owzx_dummyinfo) as varchar(10))),@nickname,@money,@bettime,@roomname,@bettype,@avatar,@vip)
+INSERT INTO [owzx_dummyinfo]([username],[nickname],money,bettime,roomname,bettype,avatar,vip,start,end)
+VALUES('usn'+rtrim(cast((select count(1)+1 from owzx_dummyinfo) as varchar(10))),@nickname,@money,@bettime,@roomname,@bettype,@avatar,@vip,@start,@end)
 
 select '成功' state,'usn'+rtrim(cast((select count(1) from owzx_dummyinfo) as varchar(10))) username
 commit tran t1
