@@ -537,9 +537,11 @@ namespace OWZX.Web.Admin.Controllers
                     BetType =model.BetType,
                     RoomName = model.RoomType,
                     Avatar=model.Avatar,
-                    Vip = int.Parse(model.Vip)//,
-                    //Start=model.Start.Length==1?"0"+model.Start:model.Start,
-                    //End = model.End.Length == 1 ? "0" + model.End : model.End,
+                    Vip = int.Parse(model.Vip),
+                    Start=(model.ST_H.Length==1?"0"+model.ST_H:model.ST_H)+":"+
+                    (model.ST_M.Length==1?"0"+model.ST_M:model.ST_M),
+                    End = (model.ET_H.Length==1?"0"+model.ET_H:model.ET_H)+":"+
+                    (model.ET_M.Length==1?"0"+model.ET_M:model.ET_M)
                 };
                 DataTable result = NewUser.UpdateDummyUser(dum);
                 if (result == null || result.Rows.Count == 0)
@@ -575,12 +577,17 @@ namespace OWZX.Web.Admin.Controllers
                 BetType = dt[0].BetType,
                 RoomType=dt[0].RoomName,
                 Avatar = dt[0].Avatar,
-                Vip = dt[0].Vip.ToString()
+                Vip = dt[0].Vip.ToString(),
+                ST_H=dt[0].Start.Split(':')[0],
+                ST_M = dt[0].Start.Split(':')[1],
+                ET_H = dt[0].End.Split(':')[0],
+                ET_M = dt[0].End.Split(':')[1]
             };
             return View(usdum);
         }
         [HttpPost]
-        public ActionResult EditDummy(string nickname, string money, string bettime, string bettype, string roomtype, string avatar,int vip, int dummyid = 0)
+        public ActionResult EditDummy(string nickname, string money, string bettime, string bettype, string roomtype,
+            string avatar,int vip,string st_h,string st_m,string et_h,string et_m, int dummyid = 0)
         {
             LoadRoom();
             ViewData["referer"] = ShopUtils.GetAdminRefererCookie();
@@ -595,7 +602,11 @@ namespace OWZX.Web.Admin.Controllers
                     BetType = bettype,
                     RoomName = roomtype,
                     Avatar=avatar,
-                    Vip=vip
+                    Vip=vip,
+                    Start = (st_h.Length == 1 ? "0" + st_h : st_h) + ":" +
+                    (st_m.Length == 1 ? "0" + st_m : st_m),
+                    End = (et_h.Length == 1 ? "0" + et_h : et_h) + ":" +
+                    (et_m.Length == 1 ? "0" + et_m : et_m)
 
                 };
                 DataTable result = NewUser.UpdateDummyUser(dum);
@@ -702,6 +713,22 @@ namespace OWZX.Web.Admin.Controllers
             vipList.Add(new SelectListItem() { Text = "至尊", Value = "6" });
             ViewData["vipList"] = vipList;
 
+
+            List<SelectListItem> H = new List<SelectListItem>();
+            for (int i = 0; i < 24;i++ )
+            {
+                H.Add(new SelectListItem() { Text = i.ToString(), Value = i.ToString().Length==1?"0"+i.ToString():i.ToString() });
+             }
+
+            ViewData["H"] = H;
+
+            List<SelectListItem> M = new List<SelectListItem>();
+            for (int i = 0; i < 60; i++)
+            {
+                M.Add(new SelectListItem() { Text = i.ToString(), Value = i.ToString().Length == 1 ? "0" + i.ToString() : i.ToString() });
+            }
+
+            ViewData["M"] = M;
 
             string allowImgType = string.Empty;
             string[] imgTypeList = StringHelper.SplitString(BSPConfig.ShopConfig.UploadImgType, ",");

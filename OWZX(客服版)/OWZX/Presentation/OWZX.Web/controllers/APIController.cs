@@ -554,7 +554,7 @@ namespace OWZX.Web.controllers
         {
             try
             {
-                DataTable dt = News.GetNewsList(1, 1, "where newstypeid=3 and convert(varchar(10),addtime,120)=convert(varchar(10),getdate(),120)");
+                DataTable dt = News.GetNewsList(1, 1, "where newstypeid=3 ");
                 List<MD_NewsInfo> list = (List<MD_NewsInfo>)ModelConvertHelper<MD_NewsInfo>.ConvertToModel(dt);
                 if (list.Count > 0)
                 {

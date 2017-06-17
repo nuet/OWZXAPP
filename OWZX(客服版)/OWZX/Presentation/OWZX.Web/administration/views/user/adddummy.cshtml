@@ -9,6 +9,7 @@
 
 <link type="text/css" rel="stylesheet" href="/components/webuploader/webuploader.css" />
 <script type="text/javascript" src="/components/webuploader/webuploader.js"></script>
+<script src="~/components/my97datepicker/WdatePicker.js"></script>
     <script type="text/javascript">
 
     $(function ()
@@ -135,16 +136,18 @@
                         </div>
                     </td>
                 </tr>
-                @*<tr>
+                <tr>
                     <td align="right" width="60px;">休息时间：</td>
                     <td>
                         <div class="left">
-                            <input type="text" class="Wdate" name="Start" id="Start" placeholder="开始时间" onfocus="WdatePicker({ maxDate: '#F{$dp.$D(\'End\')}', dateFmt: 'yyyy-MM-dd' })" value="@Model.Start" autocomplete="off" />
+                            @Html.DropDownListFor(x => x.ST_H, ViewData["H"] as List<SelectListItem>):
+                            @Html.DropDownListFor(x => x.ST_M, ViewData["M"] as List<SelectListItem>)
                             至
-                            <input type="text" class="Wdate" name="End" id="End" placeholder="结束时间" onfocus="WdatePicker({ minDate: '#F{$dp.$D(\'Start\')}', dateFmt: 'yyyy-MM-dd'})" value="@Model.End" autocomplete="off" />
+                            @Html.DropDownListFor(x => x.ET_H, ViewData["H"] as List<SelectListItem>):
+                            @Html.DropDownListFor(x => x.ET_M, ViewData["M"] as List<SelectListItem>)
                         </div>
                     </td>
-                </tr>*@
+                </tr>
                 <tr style="height:120px">
                     <td align="right" width="70px;" style="vertical-align:top;">投注类型：</td>
                     <td>
