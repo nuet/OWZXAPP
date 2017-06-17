@@ -6,9 +6,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>后台菜单栏</title>
-    <script type="text/javascript" src="/administration/scripts/jquery.js"></script>
-    <script type="text/javascript" src="/administration/scripts/jquery.jplayer.min.js"></script>
-         <script type="text/javascript" src="/administration/scripts/cookie.js"></script> 
+    <script type="text/javascript" src="/administration/scripts/jquery.js"></script>  
     <script type="text/javascript">
         document.write("<script src='/administration/menu/@{@WorkContext.AdminGid}.js?time=" + new Date() + "'></s" + "cript>")
     </script>
@@ -42,15 +40,7 @@
                                                                 #menu ul li a {display: block;background: url(/administration/images/li.jpg) no-repeat 35px center;height: 25px;line-height: 25px;padding-left: 48px;}
                                                                 #menu ul li a:hover, #menu ul li a.hot {background: url(/administration/images/li1.jpg) no-repeat 35px center;color: #e17a00; }
                                                             </style>
-    <style type="text/css">
-#winpop {width: 140px;height: 100px;position: fixed;right: 0;bottom: 0px;border: 1px solid #2F73B8;color: #fff;margin: 0;padding: 1px;overflow: hidden;display: none;background: #FFFFFF}
-#winpop .title {width: 100%;height: 20px;line-height: 20px;color: #fff;background: #2F73B8;font-weight: bold;text-align: center;font-size: 12px;}
-#winpop .title span { color: #fff; }
-#winpop .con {width: 100%;height: 80px;line-height: 80px;font-weight: bold;font-size: 12px;color: #FF0000;text-decoration: underline;text-align: center}
-#winpop .con a {font-weight: bold;font-size: 12px;color: #FF0000;text-decoration: underline;text-align: center}
-#silu {font-size: 13px;color: #999999;position: absolute;right: 0;text-align: right;text-decoration: underline;line-height: 22px;}
-.close2 {position: absolute;right: 4px;top: -1px;color: #FFFFFF;cursor: pointer}
-</style>
+ 
 </head>
 <body style="background: #e6e7e9;">
 <div id="menu">
@@ -60,14 +50,7 @@
     </ul>
     <img src="/administration/images/menubg_bottom.jpg" width="142px" height="47"/>
 </div>
-
-<div id="jquery_jplayer_1" style="display: none;"></div>
-<div id="jquery_jplayer_2" style="display: none;"></div>
-<div id="winpop">
-    <div class="title">您有新<span id="spanhref"></span>消息<span class="close2" onclick="tips_pop()">X</span></div>
-    <div class="con"><img id="mset" style="width: 20px; height: 20px; cursor: pointer;" src="/administration/images/laba.png"/>&nbsp;<a id="hrefurl" target='frameRight'></a>
-    </div>
-</div>
+      
 <script type="text/javascript">
         $(function () {
             var menuLiList = "";
@@ -106,75 +89,7 @@
 
             })
         })
-
-    $(function() {
-        $("#jquery_jplayer_1").jPlayer({
-            ready: function() {
-                $(this).jPlayer("setMedia",
-                {
-                    mp3: "/administration/scripts/draw.mp3"
-                });
-            },
-            swfPath: "/administration/script",
-            supplied: "mp3",
-            wmode: "window"
-        });
-        $("#jquery_jplayer_2").jPlayer({
-            ready: function () {
-                $(this).jPlayer("setMedia",
-                {
-                    mp3: "/administration/scripts/xiaoxi.mp3"
-                });
-            },
-            swfPath: "/administration/script",
-            supplied: "mp3",
-            wmode: "window"
-        });
-        setInterval(function () { getCZCount('owzx_userremit') }, 15000);
-        setInterval(function () { getCZCount('owzx_userdraw') }, 30000);
-        if (getCookie("htpmusic") != "1") {
-            $('#mset').attr('src', '/administration/images/laba.png');
-        } else {
-            $('#mset').attr('src', '/administration/images/stoplab.png');
-        }
-        $('#mset').click(function () {
-            console.log(getCookie("htpmusic"));
-            if (getCookie("htpmusic") != "1") {
-                $('#mset').attr('src', '/administration/images/stoplab.png');
-                setCookie("htpmusic", 1, "1");
-            } else {
-
-                $('#mset').attr('src', '/administration/images/laba.png');
-
-                setCookie("htpmusic", 2, "1");
-            }
-        });
-    });
-    var showcontent;
-    var hidecontent;
-    function getCZCount(name) {
-        $.post('/admin/Draw/GetDrawCount', { tablename: name }, function (data) {
-            if (data.result > 0) {
-                console.log(getCookie("stopmusic"));
-                if (name == "UserOrders") {
-                    if (getCookie("htpmusic") != "1") {
-                        $("#jquery_jplayer_1").jPlayer('play');
-                    }
-                } else {
-                    if (getCookie("htpmusic") != "1") {
-                        $("#jquery_jplayer_2").jPlayer('play');
-                    }
-                }
-                $('#spanhref').html(name == "owzx_userremit" ? "充值" : "提现");
-                $('#hrefurl').attr("href", name == "owzx_userremit" ? "/admin/newuser/remitlist" : "/admin/draw/drawlist").html("统计数量(" + data.result + ")");
-                $("#winpop").fadeIn(900);
-            }
-        });
-    }
-
-    function tips_pop() {
-        $("#winpop").fadeOut(700);
-    }
+     
     </script>
 </body>
 </html>

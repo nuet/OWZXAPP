@@ -288,6 +288,7 @@ namespace OWZX.Core
         /// <param name="condition"></param>
         /// <returns></returns>
         DataTable GetUserList(int pageSize, int pageNumber, string condition = "");
+        DataTable GetUserParentList(int pageSize, int pageNumber, string condition = "");
         /// <summary>
         /// 获取团队列表
         /// </summary>

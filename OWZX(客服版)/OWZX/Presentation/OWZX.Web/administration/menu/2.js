@@ -58,7 +58,11 @@
 	    {
                 "title": "虚拟用户",
                 "url": "/admin/user/listdummy"
-	},
+	    },
+        {
+            "title": "代理管理",
+            "url": "/admin/user/lowerlist"
+        },
             {
                 "title": "管理员组",
                 "url": "/admin/admingroup/list"

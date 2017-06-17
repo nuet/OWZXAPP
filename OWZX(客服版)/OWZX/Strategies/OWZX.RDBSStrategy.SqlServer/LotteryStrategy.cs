@@ -1109,16 +1109,8 @@ into  #list
 FROM owzx_bett a
 join owzx_users b on a.uid=b.uid
 join owzx_lotteryset c on a.bttypeid=c.bttypeid
-join owzx_lotteryrecord aa on a.lotterynum=aa.expect
-<<<<<<< origin/master
-left join owzx_bettprofitloss cc on a.bettid=cc.bettid --投注记录没有合并
-=======
-<<<<<<< HEAD
-left join owzx_bettprofitloss cc on a.bettid=cc.bettid
-=======
-left join owzx_bettprofitloss cc on a.bettid=cc.bettid --投注记录没有合并
->>>>>>> cc3e7cefd23b4caac2099ae65613afb66b3b2d37
->>>>>>> local
+join owzx_lotteryrecord aa on a.lotterynum=aa.expect 
+left join owzx_bettprofitloss cc on a.bettid=cc.bettid  
 join owzx_sys_basetype d on a.roomid=d.systypeid
 join owzx_sys_basetype e on a.lotteryid=e.systypeid
 join owzx_sys_basetype f on c.type=f.systypeid
